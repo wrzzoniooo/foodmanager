@@ -1,0 +1,186 @@
+{
+ "generatedAt": "2026-11-06T19:09:41.499Z",
+ "source": "lidl.pl (publiczne strony ofert spożywczych)",
+ "products": [
+  {
+   "id": "lidl-11150766",
+   "name": "Banany, luzem",
+   "category": "owoce",
+   "defaultPlace": "pantry",
+   "imageUrl": "https://www.lidl.pl/assets/gcpee9b5edda4384d6fba0ac93727dd6b8c.png",
+   "url": "https://www.lidl.pl/p/banany-luzem/p11150766",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11263684",
+   "name": "Filet z indyka, XXL",
+   "brand": "Rzeźnik",
+   "category": "mieso",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcp4d30427aa18a404487657b7ea89c069b.png",
+   "url": "https://www.lidl.pl/p/rzeznik-filet-z-indyka-xxl/p11263684",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11407883",
+   "name": "Kaczka – tuszka",
+   "brand": "Rzeźnik",
+   "category": "mieso",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcp5634fbe176154c3fbef257714d27a3dd.png",
+   "url": "https://www.lidl.pl/p/rzeznik-kaczka-tuszka/p11407883",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11436970",
+   "name": "Kiełbasa śląska, XXL",
+   "brand": "Pikok pure",
+   "category": "mieso",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcp7bb55d8b24f94987acb4748d542ada45.png",
+   "url": "https://www.lidl.pl/p/pikok-pure-kielbasa-slaska-xxl/p11436970",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11408148",
+   "name": "Majonez klasyczny z żółtkami jaj od kur z wolnego wybiegu",
+   "brand": "Kania",
+   "category": "sosy",
+   "defaultPlace": "pantry",
+   "imageUrl": "https://www.lidl.pl/assets/gcpa72b8b18ded5428f9d213e62f0f54762.png",
+   "url": "https://www.lidl.pl/p/kania-majonez-klasyczny-z-zoltkami-jaj-od-kur-z-wolnego-wybiegu/p11408148",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11030024",
+   "name": "Mandarynki, luzem",
+   "category": "owoce",
+   "defaultPlace": "pantry",
+   "imageUrl": "https://www.lidl.pl/assets/gcp22d6c15dedbe4cc1ae9441e20500fac3.png",
+   "url": "https://www.lidl.pl/p/mandarynki-luzem/p11030024",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11427027",
+   "name": "Masło ekstra 83%",
+   "brand": "Pilos",
+   "category": "nabial",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcpdf4404f8adf94075ae8585885de5a706.png",
+   "url": "https://www.lidl.pl/p/pilos-maslo-ekstra-83/p11427027",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11421274",
+   "name": "Mleko UHT 3,2% z Polskiej Mleczarni",
+   "brand": "Mlekovita",
+   "category": "nabial",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcpe54d65eaabbd4bf386cc82d33e3912ee.png",
+   "url": "https://www.lidl.pl/p/mlekovita-mleko-uht-3-2-z-polskiej-mleczarni/p11421274",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11438030",
+   "name": "Pikok Premium Kiełbasa krakowska z szynki, XXL",
+   "brand": "Pikok",
+   "category": "mieso",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcp64eff289121d49cdb65129c70ccf0b29.png",
+   "url": "https://www.lidl.pl/p/pikok-pikok-premium-kielbasa-krakowska-z-szynki-xxl/p11438030",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11214563",
+   "name": "Polskie jabłka czerwone, luzem",
+   "brand": "Ryneczek Lidla",
+   "category": "owoce",
+   "defaultPlace": "pantry",
+   "imageUrl": "https://www.lidl.pl/assets/gcpea6fddcfa19c4f6bb4dc6645d8891426.png",
+   "url": "https://www.lidl.pl/p/ryneczek-lidla-polskie-jablka-czerwone-luzem/p11214563",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11406146",
+   "name": "Rogal świętomarciński",
+   "category": "pieczywo",
+   "defaultPlace": "pantry",
+   "imageUrl": "https://www.lidl.pl/assets/gcpc5af492247c242f18b754ccbed34711e.png",
+   "url": "https://www.lidl.pl/p/rogal-swietomarcinski/p11406146",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11433248",
+   "name": "Schab wędzony wiśnią, XXL",
+   "brand": "Pikok",
+   "category": "mieso",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcp905b1599311f4232a8ff851fdaec511d.png",
+   "url": "https://www.lidl.pl/p/pikok-schab-wedzony-wisnia-xxl/p11433248",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11432037",
+   "name": "Ser edam w plastrach, XXL",
+   "brand": "Pilos",
+   "category": "sery",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcp1137e78f5b4c4cf19f8a04da625b04de.png",
+   "url": "https://www.lidl.pl/p/pilos-ser-edam-w-plastrach-xxl/p11432037",
+   "lastSeen": "2026-11-06"
+  },
+  {
+   "id": "lidl-11305114",
+   "name": "Szynka wieprzowa, XXL",
+   "brand": "Rzeźnik",
+   "category": "mieso",
+   "defaultPlace": "fridge",
+   "imageUrl": "https://www.lidl.pl/assets/gcp8e92625ccfbc465a830e7d0352bde2a9.png",
+   "url": "https://www.lidl.pl/p/rzeznik-szynka-wieprzowa-xxl/p11305114",
+   "lastSeen": "2026-11-06"
+  }
+ ],
+ "promos": [
+  {
+   "productId": "lidl-11406146",
+   "priceNow": 3.49,
+   "priceOld": 7.49,
+   "from": "2026-11-05",
+   "to": "2026-11-07"
+  },
+  {
+   "productId": "lidl-11407883",
+   "priceNow": 9.99,
+   "priceOld": 16.99,
+   "from": "2026-11-05",
+   "to": "2026-11-07"
+  },
+  {
+   "productId": "lidl-11433248",
+   "priceNow": 8.99,
+   "priceOld": 15.99,
+   "from": "2026-11-05",
+   "to": "2026-11-07"
+  },
+  {
+   "productId": "lidl-11438030",
+   "priceNow": 24.99,
+   "from": "2026-11-05",
+   "to": "2026-11-07"
+  },
+  {
+   "productId": "lidl-11436970",
+   "priceNow": 17.99,
+   "priceOld": 29.99,
+   "from": "2026-11-05",
+   "to": "2026-11-07"
+  },
+  {
+   "productId": "lidl-11214563",
+   "priceNow": 2.49,
+   "priceOld": 4.49,
+   "from": "2026-11-06",
+   "to": "2026-11-07"
+  }
+ ]
+}
