@@ -121,8 +121,6 @@ export function Scanner({
     return () => window.removeEventListener('keydown', onKey);
   }, [onBack]);
 
-  const canVibrate = typeof navigator.vibrate === "function";
-
   return (
     <div className="scan" role="dialog" aria-modal="true" aria-label="Skanuj kod">
       {problem ? null : <video ref={videoRef} muted playsInline aria-label="Podgląd z aparatu" />}
@@ -157,7 +155,6 @@ export function Scanner({
         <button type="button" className="btn wide" onClick={onManual}>
           Wpisz kod ręcznie
         </button>
-        {!problem && canVibrate ? <p className="scan-sub">Po odczycie telefon krótko zawibruje</p> : null}
       </div>
     </div>
   );

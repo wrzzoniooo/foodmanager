@@ -1,7 +1,7 @@
 import { useRef, useState, type ReactNode } from 'react';
 import { Barcode, Camera, ImagePlus, ChevronRight, Keyboard } from 'lucide-react';
 import { useStore } from '../store';
-import { CATEGORIES } from '../categories';
+import { CATEGORIES, defaultPlaceFor } from '../categories';
 import { CatalogSearch } from './CatalogSearch';
 import { Scanner } from './Scanner';
 import { Chips, ProductImage, Sheet, useToast } from './ui';
@@ -36,10 +36,24 @@ function OptionCard({ icon, title, hint, onClick }: { icon: ReactNode; title: st
   );
 }
 
-export function AddProductSheet({ place, onClose }: { place: Place; onClose: () => void }) {
+/**
+ * Okno dodawania produktu. Domyślnie dodaje do lodówki lub szafek (place); z forList dodaje na listę zakupów
+ * (bez pytania, gdzie produkt trzymasz).
+ */
+export function AddProductSheet({
+  place,
+  onClose,
+  forList = false,
+  initialMode = 'menu',
+}: {
+  place: Place;
+  onClose: () => void;
+  forList?: boolean;
+  initialMode?: 'menu' | 'scan';
+}) {
   const { state, dispatch } = useStore();
   const toast = useToast();
-  const [mode, setMode] = useState<Mode>('menu');
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [query, setQuery] = useState('');
 
   // wynik wyszukania po kodzie
@@ -62,6 +76,12 @@ export function AddProductSheet({ place, onClose }: { place: Place; onClose: () 
 
   const addToHome = (product: Product, targetPlace: Place, existed: boolean) => {
     dispatch({ type: 'productAdd', product });
+    if (forList) {
+      dispatch({ type: 'listAdd', productId: product.id });
+      toast(`${product.name} na liście`);
+      onClose();
+      return;
+    }
     dispatch({ type: 'stockAdd', productId: product.id, place: targetPlace });
     toast(existed ? `${product.name} już był w katalogu, dodano ${PLACE_TEXT[targetPlace].added}` : `${product.name} ${PLACE_TEXT[targetPlace].added}`);
     onClose();
@@ -103,9 +123,10 @@ export function AddProductSheet({ place, onClose }: { place: Place; onClose: () 
     }
     const id = `off-${found.code}`;
     const existed = state.products.some((p) => p.id === id);
+    const target = forList ? defaultPlaceFor(category) : where;
     addToHome(
-      { id, name: finalName, brand: found.brand, size: found.size, category, defaultPlace: where, imageUrl: found.imageUrl, barcode: found.code },
-      where,
+      { id, name: finalName, brand: found.brand, size: found.size, category, defaultPlace: target, imageUrl: found.imageUrl, barcode: found.code },
+      target,
       existed,
     );
   };
@@ -128,7 +149,8 @@ export function AddProductSheet({ place, onClose }: { place: Place; onClose: () 
       return;
     }
     const id = `own-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
-    addToHome({ id, name: finalName, brand: brand.trim() || undefined, category, defaultPlace: where, imageUrl: photo }, where, false);
+    const target = forList ? defaultPlaceFor(category) : where;
+    addToHome({ id, name: finalName, brand: brand.trim() || undefined, category, defaultPlace: target, imageUrl: photo }, target, false);
   };
 
   const onFile = async (file: File | undefined) => {
@@ -147,7 +169,7 @@ export function AddProductSheet({ place, onClose }: { place: Place; onClose: () 
 
   const back = mode === 'menu' ? undefined : () => setMode(mode === 'found' ? 'code' : 'menu');
   const title =
-    mode === 'menu' ? PLACE_TEXT[place].title : mode === 'code' ? 'Wpisz kod' : mode === 'found' ? 'Znaleziony produkt' : 'Własny produkt';
+    mode === 'menu' ? (forList ? 'Dodaj do listy' : PLACE_TEXT[place].title) : mode === 'code' ? 'Wpisz kod' : mode === 'found' ? 'Znaleziony produkt' : 'Własny produkt';
 
   const previewProduct: Product = { id: 'preview', name: name || 'Produkt', category, defaultPlace: where, imageUrl: mode === 'found' ? found?.imageUrl : photo };
 
@@ -163,6 +185,11 @@ export function AddProductSheet({ place, onClose }: { place: Place; onClose: () 
             showWhenEmpty
             resultsLabel="Z katalogu"
             onPick={(p) => {
+              if (forList) {
+                dispatch({ type: 'listAdd', productId: p.id });
+                toast(`${p.name} na liście`);
+                return;
+              }
               dispatch({ type: 'stockAdd', productId: p.id, place });
               toast(`${p.name} ${PLACE_TEXT[place].added}`);
             }}
@@ -241,12 +268,14 @@ export function AddProductSheet({ place, onClose }: { place: Place; onClose: () 
               <div className="lab">Kategoria</div>
               <Chips wrap label="Kategoria" options={CATEGORY_OPTIONS} value={category} onChange={setCategory} />
             </div>
-            <div className="section">
-              <div className="lab">Gdzie trzymasz</div>
-              <Chips wrap label="Gdzie trzymasz" options={PLACE_OPTIONS} value={where} onChange={setWhere} />
-            </div>
+            {forList ? null : (
+              <div className="section">
+                <div className="lab">Gdzie trzymasz</div>
+                <Chips wrap label="Gdzie trzymasz" options={PLACE_OPTIONS} value={where} onChange={setWhere} />
+              </div>
+            )}
             <button type="button" className="btn wide" onClick={confirmFound}>
-              Dodaj do katalogu i {PLACE_TEXT[where].short}
+              {forList ? 'Dodaj do listy' : `Dodaj do katalogu i ${PLACE_TEXT[where].short}`}
             </button>
           </div>
         ) : null}
@@ -298,12 +327,14 @@ export function AddProductSheet({ place, onClose }: { place: Place; onClose: () 
               <div className="lab">Kategoria</div>
               <Chips wrap label="Kategoria" options={CATEGORY_OPTIONS} value={category} onChange={setCategory} />
             </div>
-            <div className="section">
-              <div className="lab">Gdzie trzymasz</div>
-              <Chips wrap label="Gdzie trzymasz" options={PLACE_OPTIONS} value={where} onChange={setWhere} />
-            </div>
+            {forList ? null : (
+              <div className="section">
+                <div className="lab">Gdzie trzymasz</div>
+                <Chips wrap label="Gdzie trzymasz" options={PLACE_OPTIONS} value={where} onChange={setWhere} />
+              </div>
+            )}
             <button type="button" className="btn wide" onClick={confirmCustom}>
-              Dodaj produkt
+              {forList ? 'Dodaj do listy' : 'Dodaj produkt'}
             </button>
           </>
         ) : null}

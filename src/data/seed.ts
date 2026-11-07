@@ -1,4 +1,4 @@
-import type { AppState, ListItem, Product, StockItem, UsageEvent } from '../types';
+import type { AppState, ListItem, Product, PurchaseEvent, StockItem, UsageEvent } from '../types';
 import { isoInDays } from '../dates';
 
 /** Dane przykładowe do etapu 1 (bez backendu). Docelowo katalog i promocje importujemy automatycznie z Lidla. */
@@ -110,6 +110,18 @@ const EVENTS: UsageEvent[] = [
   ...evs('penne', [20, 6]),
 ];
 
+/** Przykładowa historia zakupów (dni temu), żeby było widać, co aplikacja uzna za często kupowane. */
+const buys = (productId: string, daysAgo: number[]): PurchaseEvent[] =>
+  daysAgo.map((d) => ({ productId, ts: Date.now() - d * 24 * 60 * 60 * 1000, qty: 1 }));
+
+const PURCHASES: PurchaseEvent[] = [
+  ...buys('mleko', [28, 21, 14, 7]),
+  ...buys('jajka', [30, 22, 14, 6]),
+  ...buys('jogurt', [30, 24, 16, 9]),
+  ...buys('maslo', [35, 25, 15]),
+  ...buys('chleb', [10, 7, 4]),
+];
+
 export function createSeed(): AppState {
-  return { products: PRODUCTS, stock: STOCK, list: LIST, events: EVENTS, dismissed: {} };
+  return { products: PRODUCTS, stock: STOCK, list: LIST, events: EVENTS, purchases: PURCHASES, habits: {}, dismissed: {} };
 }

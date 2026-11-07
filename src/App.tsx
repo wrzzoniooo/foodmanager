@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { buildSuggestions } from './insights';
 import { StoreProvider, useStore } from './store';
 import { CatalogProvider } from './catalog';
 import { BottomNav, ToastProvider, type Tab } from './components/ui';
@@ -9,7 +10,7 @@ import { PromoScreen } from './screens/PromoScreen';
 function Shell() {
   const [tab, setTab] = useState<Tab>('fridge');
   const { state } = useStore();
-  const openCount = state.list.filter((l) => !l.done).length;
+  const hasSuggestions = useMemo(() => buildSuggestions(state).length > 0, [state]);
 
   return (
     <div className="app">
@@ -19,7 +20,11 @@ function Shell() {
         {tab === 'list' ? <ListScreen /> : null}
         {tab === 'promo' ? <PromoScreen /> : null}
       </main>
-      <BottomNav tab={tab} onChange={setTab} listCount={openCount} />
+      <BottomNav
+        tab={tab}
+        onChange={setTab}
+        list={{ total: state.list.length, done: state.list.filter((l) => l.done).length, suggestions: hasSuggestions }}
+      />
     </div>
   );
 }

@@ -81,7 +81,7 @@ export function CatalogSearch({
         </ul>
         </section>
       ) : hasQuery ? (
-        <p className="note">Nie ma takiego produktu w katalogu. Dodasz go w Lodówce lub Szafkach: skanem kodu albo jako własny produkt.</p>
+        <p className="note">Nie ma takiego produktu w katalogu.</p>
       ) : null}
     </div>
   );

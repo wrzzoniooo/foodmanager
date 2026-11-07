@@ -51,6 +51,15 @@ export interface UsageEvent {
   productId: string;
   ts: number;
   delta: number;
+  /** "trashed": wyrzucone, nie liczy się do zużycia (sugestie braków) */
+  kind?: 'eaten' | 'trashed';
+}
+
+/** Zakup zapisany przy "Zakończ zakupy": z tego liczymy, co kupujecie najczęściej i jak często. */
+export interface PurchaseEvent {
+  productId: string;
+  ts: number;
+  qty: number;
 }
 
 /** Promocja z oferty Lidla. Daty ISO (RRRR-MM-DD), włącznie. */
@@ -62,11 +71,16 @@ export interface Promo {
   to: string;
 }
 
+/** Ile razy produkt trafił do lodówki i do szafek z wyboru użytkownika: z tego aplikacja wie, gdzie go zwykle chowacie. */
+export type PlaceHabits = Record<string, { fridge: number; pantry: number }>;
+
 export interface AppState {
   products: Product[];
   stock: StockItem[];
   list: ListItem[];
   events: UsageEvent[];
+  purchases: PurchaseEvent[];
+  habits: PlaceHabits;
   /** productId -> czas odrzucenia sugestii */
   dismissed: Record<string, number>;
 }

@@ -1,20 +1,32 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { ArrowLeft, Minus, Plus, Refrigerator, Archive, ListChecks, BadgePercent, X, Search } from 'lucide-react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { ArrowLeft, Minus, Plus, Refrigerator, Archive, ListChecks, BadgePercent, X, Search, type LucideIcon } from 'lucide-react';
 import { CATEGORY_BY_ID } from '../categories';
 import type { Product } from '../types';
 
 /* ---------- Zdjęcie produktu z awaryjną ikoną kategorii ---------- */
 
-export function ProductImage({ product, size = 44 }: { product: Product; size?: number }) {
+export function ProductImage({
+  product,
+  size = 44,
+  fluid,
+}: {
+  product: Product;
+  size?: number;
+  /** Zdjęcie na całą szerokość rodzica: "square" (kwadrat) albo stała wysokość w px. */
+  fluid?: 'square' | number;
+}) {
   const [failed, setFailed] = useState(false);
   const { Icon } = CATEGORY_BY_ID[product.category];
   const showImage = product.imageUrl && !failed;
+  const style = fluid
+    ? { width: '100%', borderRadius: 16, ...(fluid === 'square' ? { aspectRatio: '1 / 1' } : { height: fluid }) }
+    : { width: size, height: size, borderRadius: Math.round(size * 0.3) };
   return (
-    <div className="thumb" style={{ width: size, height: size, borderRadius: Math.round(size * 0.3) }}>
+    <div className="thumb" style={style}>
       {showImage ? (
         <img src={product.imageUrl} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setFailed(true)} />
       ) : (
-        <Icon size={Math.round(size * 0.48)} strokeWidth={1.75} aria-hidden="true" />
+        <Icon size={fluid ? 36 : Math.round(size * 0.48)} strokeWidth={1.75} aria-hidden="true" />
       )}
     </div>
   );
@@ -26,17 +38,31 @@ export function QtyStepper({
   qty,
   onChange,
   name,
+  min,
 }: {
   qty: number;
   onChange: (delta: number) => void;
   name: string;
+  /** Najmniejsza ilość, przy której przycisk minus przestaje działać. */
+  min?: number;
 }) {
+  // Liczba lekko "podskakuje" przy zmianie ilości (nie przy pierwszym wyświetleniu).
+  const prev = useRef(qty);
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (prev.current !== qty) {
+      prev.current = qty;
+      setTick((t) => t + 1);
+    }
+  }, [qty]);
   return (
     <div className="qty">
-      <button type="button" aria-label={`Zmniejsz ilość: ${name}`} onClick={() => onChange(-1)}>
+      <button type="button" aria-label={`Zmniejsz ilość: ${name}`} disabled={min !== undefined && qty <= min} onClick={() => onChange(-1)}>
         <Minus size={16} aria-hidden="true" />
       </button>
-      <span aria-live="polite">{qty}</span>
+      <span key={tick} className={tick ? 'qty-n bump' : 'qty-n'} aria-live="polite">
+        {qty}
+      </span>
       <button type="button" aria-label={`Zwiększ ilość: ${name}`} onClick={() => onChange(1)}>
         <Plus size={16} aria-hidden="true" />
       </button>
@@ -80,6 +106,40 @@ export function Chips<T extends string>({
   );
 }
 
+/* ---------- Filtry z ikonami (małe kółka z podpisem) ---------- */
+
+export function IconChips<T extends string>({
+  options,
+  value,
+  onChange,
+  label,
+}: {
+  options: { id: T; label: string; Icon: LucideIcon }[];
+  value: T;
+  onChange: (id: T) => void;
+  label?: string;
+}) {
+  return (
+    <div className="icon-chips" role="tablist" aria-label={label}>
+      {options.map(({ id, label: text, Icon }) => (
+        <button
+          key={id}
+          type="button"
+          role="tab"
+          aria-selected={id === value}
+          className={id === value ? 'icon-chip on' : 'icon-chip'}
+          onClick={() => onChange(id)}
+        >
+          <span className="icon-chip-dot">
+            <Icon size={20} strokeWidth={1.9} aria-hidden="true" />
+          </span>
+          <span className="icon-chip-text">{text}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /* ---------- Dolna nawigacja ---------- */
 
 export type Tab = 'fridge' | 'pantry' | 'list' | 'promo';
@@ -91,44 +151,111 @@ const TABS: { id: Tab; label: string; Icon: typeof Refrigerator }[] = [
   { id: 'promo', label: 'Promocje', Icon: BadgePercent },
 ];
 
-export function BottomNav({ tab, onChange, listCount }: { tab: Tab; onChange: (t: Tab) => void; listCount: number }) {
+/** Stan zakładki Lista: ile pozycji na liście, ile już w koszyku i czy są sugestie braków. */
+export interface ListSignal {
+  total: number;
+  done: number;
+  suggestions: boolean;
+}
+
+/** Jeden znacznik na zakładce Lista, bez plakietek: pierścień wokół ikony. Czerwony = postęp zakupów, żółty = same sugestie. */
+function listRing(signal: ListSignal): { percent: number; color: string; text: string } | null {
+  if (signal.total > 0) {
+    const open = signal.total - signal.done;
+    return {
+      percent: Math.round((signal.done / signal.total) * 100),
+      color: 'var(--red)',
+      text: `${open} do kupienia, ${signal.done} w koszyku`,
+    };
+  }
+  if (signal.suggestions) return { percent: 100, color: 'var(--fresh-amber)', text: 'Coś się kończy' };
+  return null;
+}
+
+export function BottomNav({
+  tab,
+  onChange,
+  list,
+}: {
+  tab: Tab;
+  onChange: (t: Tab) => void;
+  list: ListSignal;
+}) {
+  const ring = listRing(list);
   return (
     <nav className="nav" aria-label="Główna nawigacja">
-      {TABS.map(({ id, label, Icon }) => (
-        <button
-          key={id}
-          type="button"
-          className={id === tab ? 'nav-btn on' : 'nav-btn'}
-          aria-label={label}
-          aria-current={id === tab ? 'page' : undefined}
-          onClick={() => onChange(id)}
-        >
-          <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
-          {id === 'list' && listCount > 0 ? <span className="nav-count">{listCount}</span> : null}
-        </button>
-      ))}
+      {TABS.map(({ id, label, Icon }) => {
+        const withRing = id === 'list' && ring;
+        return (
+          <button
+            key={id}
+            type="button"
+            className={id === tab ? 'nav-btn on' : 'nav-btn'}
+            aria-label={withRing ? `${label}: ${ring.text}` : label}
+            aria-current={id === tab ? 'page' : undefined}
+            onClick={() => onChange(id)}
+          >
+            {withRing ? (
+              <span className="nav-ringwrap">
+                <span
+                  className="nav-ring"
+                  style={{ '--p': ring.percent, '--rc': ring.color } as CSSProperties}
+                  aria-hidden="true"
+                />
+                <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
+              </span>
+            ) : (
+              <Icon size={22} strokeWidth={1.9} aria-hidden="true" />
+            )}
+          </button>
+        );
+      })}
     </nav>
   );
 }
 
 /* ---------- Toast ---------- */
 
-const ToastContext = createContext<(message: string) => void>(() => {});
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+type ShowToast = (message: string, action?: ToastAction) => void;
+
+const ToastContext = createContext<ShowToast>(() => {});
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [message, setMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; action?: ToastAction } | null>(null);
   const timer = useRef<number | undefined>(undefined);
-  const show = useCallback((m: string) => {
-    setMessage(m);
+  const show = useCallback<ShowToast>((message, action) => {
+    setToast({ message, action });
     window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setMessage(null), 2600);
+    // Z przyciskiem "Cofnij" komunikat zostaje dłużej, żeby dało się zdążyć.
+    timer.current = window.setTimeout(() => setToast(null), action ? 6000 : 2600);
   }, []);
   useEffect(() => () => window.clearTimeout(timer.current), []);
   return (
     <ToastContext.Provider value={show}>
       {children}
       <div className="toast-region" role="status" aria-live="polite">
-        {message ? <div className="toast">{message}</div> : null}
+        {toast ? (
+          <div className={toast.action ? 'toast has-action' : 'toast'}>
+            <span>{toast.message}</span>
+            {toast.action ? (
+              <button
+                type="button"
+                className="toast-action"
+                onClick={() => {
+                  toast.action?.onClick();
+                  window.clearTimeout(timer.current);
+                  setToast(null);
+                }}
+              >
+                {toast.action.label}
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </ToastContext.Provider>
   );

@@ -1,11 +1,17 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import type { AppState, Place, Product, StockItem } from './types';
 import { createSeed } from './data/seed';
+import { preferredPlace, recordPlace } from './habits';
 
 const STORAGE_KEY = 'spizarnia.v1';
 
 type Action =
   | { type: 'stockAdjust'; stockId: string; delta: number }
+  | { type: 'stockRemove'; stockId: string; reason: 'eaten' | 'trashed'; ts?: number }
+  | { type: 'stockRestore'; item: StockItem; eventTs?: number }
+  | { type: 'listUndoAdd'; productId: string }
+  | { type: 'stockExpiry'; stockId: string; expires?: string }
+  | { type: 'stockMove'; stockId: string; place: Place }
   | { type: 'stockAdd'; productId: string; place: Place }
   | { type: 'unpack'; stockId: string; place: Place }
   | { type: 'unpackAll' }
@@ -55,26 +61,73 @@ function reducer(state: AppState, action: Action): AppState {
           : state.stock.map((s) => (s.id === item.id ? { ...s, qty } : s));
       return { ...state, stock, events };
     }
+    case 'stockRemove': {
+      const item = state.stock.find((s) => s.id === action.stockId);
+      if (!item) return state;
+      const events =
+        item.location === 'bags'
+          ? state.events
+          : [...state.events, { productId: item.productId, ts: action.ts ?? Date.now(), delta: -item.qty, kind: action.reason }];
+      return { ...state, stock: state.stock.filter((s) => s.id !== item.id), events };
+    }
+    case 'stockRestore': {
+      // Cofnięcie "zjedzone" / "wyrzucone": produkt wraca na miejsce, a zapis zużycia znika.
+      if (state.stock.some((s) => s.id === action.item.id)) return state;
+      const events =
+        action.eventTs === undefined
+          ? state.events
+          : state.events.filter((e) => !(e.ts === action.eventTs && e.productId === action.item.productId));
+      return { ...state, stock: [...state.stock, action.item], events };
+    }
+    case 'listUndoAdd': {
+      const item = state.list.find((l) => l.productId === action.productId);
+      if (!item) return state;
+      return {
+        ...state,
+        list: item.qty > 1 ? state.list.map((l) => (l.id === item.id ? { ...l, qty: l.qty - 1 } : l)) : state.list.filter((l) => l.id !== item.id),
+      };
+    }
+    case 'stockMove': {
+      const item = state.stock.find((s) => s.id === action.stockId);
+      if (!item || item.location === 'bags' || item.location === action.place) return state;
+      return {
+        ...state,
+        stock: mergeInto(state.stock, { ...item, location: action.place }),
+        habits: recordPlace(state.habits, item.productId, action.place),
+      };
+    }
+    case 'stockExpiry':
+      return {
+        ...state,
+        stock: state.stock.map((s) => (s.id === action.stockId ? { ...s, expires: action.expires || undefined } : s)),
+      };
     case 'stockAdd': {
       const existing = state.stock.find((s) => s.productId === action.productId && s.location === action.place);
+      const habits = recordPlace(state.habits, action.productId, action.place);
       if (existing) {
-        return { ...state, stock: state.stock.map((s) => (s.id === existing.id ? { ...s, qty: s.qty + 1 } : s)) };
+        return { ...state, habits, stock: state.stock.map((s) => (s.id === existing.id ? { ...s, qty: s.qty + 1 } : s)) };
       }
       return {
         ...state,
+        habits,
         stock: [...state.stock, { id: newId('s'), productId: action.productId, location: action.place, qty: 1 }],
       };
     }
     case 'unpack': {
       const item = state.stock.find((s) => s.id === action.stockId);
       if (!item || item.location !== 'bags') return state;
-      return { ...state, stock: mergeInto(state.stock, { ...item, location: action.place }) };
+      return {
+        ...state,
+        stock: mergeInto(state.stock, { ...item, location: action.place }),
+        habits: recordPlace(state.habits, item.productId, action.place),
+      };
     }
     case 'unpackAll': {
       const byId = new Map(state.products.map((p) => [p.id, p]));
       let stock = state.stock;
       for (const item of state.stock.filter((s) => s.location === 'bags')) {
-        const place = byId.get(item.productId)?.defaultPlace ?? 'pantry';
+        const product = byId.get(item.productId);
+        const place = product ? preferredPlace(state.habits, product) : 'pantry';
         stock = mergeInto(stock, { ...item, location: place });
       }
       return { ...state, stock };
@@ -100,10 +153,13 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, list: state.list.map((l) => (l.id === action.listId ? { ...l, done: !l.done } : l)) };
     case 'finishShopping': {
       let stock = state.stock;
+      const now = Date.now();
+      const purchases = [...state.purchases];
       for (const l of state.list.filter((x) => x.done)) {
         stock = mergeInto(stock, { id: newId('b'), productId: l.productId, location: 'bags', qty: l.qty });
+        purchases.push({ productId: l.productId, ts: now, qty: l.qty });
       }
-      return { ...state, stock, list: state.list.filter((l) => !l.done) };
+      return { ...state, stock, purchases, list: state.list.filter((l) => !l.done) };
     }
     case 'dismissSuggestion':
       return { ...state, dismissed: { ...state.dismissed, [action.productId]: Date.now() } };
@@ -122,7 +178,7 @@ function reducer(state: AppState, action: Action): AppState {
     case 'clearAll': {
       // Czyści dane demo: zostają tylko produkty z katalogu Lidla.
       const products = state.products.filter(isRealProduct);
-      return { products, stock: [], list: [], events: [], dismissed: {} };
+      return { products, stock: [], list: [], events: [], purchases: [], habits: {}, dismissed: {} };
     }
     case 'reset': {
       const seed = createSeed();
@@ -142,7 +198,7 @@ function load(): AppState {
         Array.isArray(parsed.list) &&
         Array.isArray(parsed.events)
       ) {
-        return { dismissed: {}, ...parsed } as AppState;
+        return { dismissed: {}, purchases: [], habits: {}, ...parsed } as AppState;
       }
     }
   } catch {

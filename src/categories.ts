@@ -10,11 +10,16 @@ import {
   Package,
   Snowflake,
   Soup,
-  Triangle,
   Wheat,
   type LucideIcon,
 } from 'lucide-react';
-import type { CategoryId } from './types';
+import { Cheese } from './CheeseIcon';
+import type { CategoryId, Place } from './types';
+
+/** Gdzie zwykle trzyma się produkt z danej kategorii (gdy nie pytamy użytkownika). */
+export function defaultPlaceFor(category: CategoryId): Place {
+  return ['nabial', 'sery', 'mieso', 'warzywa'].includes(category) ? 'fridge' : 'pantry';
+}
 
 export interface CategoryInfo {
   id: CategoryId;
@@ -25,7 +30,7 @@ export interface CategoryInfo {
 export const CATEGORIES: CategoryInfo[] = [
   { id: 'pieczywo', label: 'Pieczywo', Icon: Croissant },
   { id: 'nabial', label: 'Nabiał', Icon: Milk },
-  { id: 'sery', label: 'Sery', Icon: Triangle },
+  { id: 'sery', label: 'Sery', Icon: Cheese },
   { id: 'mieso', label: 'Mięso i wędliny', Icon: Beef },
   { id: 'warzywa', label: 'Warzywa', Icon: Carrot },
   { id: 'owoce', label: 'Owoce', Icon: Apple },

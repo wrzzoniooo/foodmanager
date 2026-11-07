@@ -1,27 +1,32 @@
-import { useMemo, useState } from 'react';
-import { Plus, Search, ShoppingBag } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { LayoutGrid, Plus, Search, ShoppingBag, ShoppingBasket, X, type LucideIcon } from 'lucide-react';
 import { useStore } from '../store';
 import { useCatalog } from '../catalog';
 import { CATEGORIES } from '../categories';
-import { buildPromos } from '../insights';
-import { daysUntil, expiryLabel, pluralPl } from '../dates';
+import { preferredPlace } from '../habits';
+import { buildPromos, buildSuggestions } from '../insights';
+import { daysUntil, pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
-import { Chips, ProductImage, QtyStepper, SearchField, useToast } from '../components/ui';
-import type { CategoryId, Place, Product, StockItem } from '../types';
+import { ItemSheet } from '../components/ItemSheet';
+import { PeekOverlay } from '../components/PeekOverlay';
+import { BagView } from '../components/BagView';
+import { StockList, type Entry } from '../components/StockItems';
+import { ViewSheet } from '../components/ViewSheet';
+import { IconChips, ProductImage, SearchField, Sheet, useToast } from '../components/ui';
+import { useViewPrefs } from '../viewPrefs';
+import type { CategoryId, Place, StockItem } from '../types';
 
-interface Entry {
-  s: StockItem;
-  p: Product;
+/** "A i B" albo "A, B i 2 inne": krótkie wyliczenie do karty. */
+function joinNames(names: string[]): string {
+  if (names.length <= 2) return names.join(' i ');
+  const rest = names.length - 2;
+  return `${names[0]}, ${names[1]} i ${rest} ${pluralPl(rest, 'inny', 'inne', 'innych')}`;
 }
 
-const PLACE_LABEL: Record<Place, { title: string; added: string }> = {
-  fridge: { title: 'Lodówka', added: 'do lodówki' },
-  pantry: { title: 'Szafki', added: 'do szafek' },
+const PLACE_LABEL: Record<Place, { title: string; added: string; genitive: string }> = {
+  fridge: { title: 'Lodówka', added: 'do lodówki', genitive: 'Lodówki' },
+  pantry: { title: 'Szafki', added: 'do szafek', genitive: 'Szafek' },
 };
-
-function meta(p: Product): string {
-  return [p.brand, p.size].filter(Boolean).join(' · ');
-}
 
 export function StockScreen({ place }: { place: Place }) {
   const { state, dispatch, productById } = useStore();
@@ -33,7 +38,12 @@ export function StockScreen({ place }: { place: Place }) {
   const [query, setQuery] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [adding, setAdding] = useState(false);
-  const [view, setView] = useState<'stock' | 'bags'>('stock');
+  const [bagOpen, setBagOpen] = useState(false);
+  const [prefs, setPrefs] = useViewPrefs(place);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [peekId, setPeekId] = useState<string | null>(null);
+  const [focusDate, setFocusDate] = useState(false);
 
   const promoByProduct = useMemo(() => {
     const map = new Map<string, number>();
@@ -61,21 +71,44 @@ export function StockScreen({ place }: { place: Place }) {
   })).filter((g) => g.entries.length > 0);
 
   const presentCategories = CATEGORIES.filter((c) => placeEntries.some((e) => e.p.category === c.id));
-  const chipOptions: { id: CategoryId | 'all'; label: string }[] = [
-    { id: 'all', label: 'Wszystko' },
-    ...presentCategories.map((c) => ({ id: c.id, label: c.label.split(' i ')[0] })),
+  const chipOptions: { id: CategoryId | 'all'; label: string; Icon: LucideIcon }[] = [
+    { id: 'all', label: 'Wszystko', Icon: LayoutGrid },
+    ...presentCategories.map((c) => ({ id: c.id, label: c.label.split(' i ')[0].split(',')[0], Icon: c.Icon })),
   ];
 
   const expiring = isFridge
     ? placeEntries.filter((e) => e.s.expires && daysUntil(e.s.expires) <= 2).sort((a, b) => (a.s.expires! < b.s.expires! ? -1 : 1))
     : [];
 
+  const lowStock = useMemo(() => buildSuggestions(state, 3), [state]);
+  const addLowStockToList = () => {
+    for (const s of lowStock) dispatch({ type: 'listAdd', productId: s.product.id });
+    toast('Dodano do listy zakupów');
+  };
+  const snoozeLowStock = () => {
+    for (const s of lowStock) dispatch({ type: 'dismissSuggestion', productId: s.product.id });
+    toast('Przypomnimy za tydzień');
+  };
+
   const bagsCount = bagEntries.length;
+  useEffect(() => {
+    if (bagsCount === 0) setBagOpen(false);
+  }, [bagsCount]);
   const bagsLabel = `${bagsCount} ${pluralPl(bagsCount, 'produkt', 'produkty', 'produktów')}`;
 
-  const unpackAll = () => {
+  // Rozpakowanie według tego, gdzie zwykle chowacie dany produkt; w komunikacie widać, ile gdzie trafiło.
+  const unpackAll = (overrides: Record<string, Place> = {}) => {
+    const placeOf = (e: Entry): Place => overrides[e.s.id] ?? preferredPlace(state.habits, e.p);
+    const toFridge = bagEntries.filter((e) => placeOf(e) === 'fridge').length;
+    const toPantry = bagEntries.length - toFridge;
+    const parts = [
+      toFridge > 0 ? `${toFridge} do lodówki` : null,
+      toPantry > 0 ? `${toPantry} do szafek` : null,
+    ].filter(Boolean);
+    // Poprawione miejsca zapamiętujemy (jako świadomy wybór), resztę rozpakowujemy wg nawyków bez uczenia.
+    for (const [stockId, where] of Object.entries(overrides)) dispatch({ type: 'unpack', stockId, place: where });
     dispatch({ type: 'unpackAll' });
-    toast(`Rozpakowano ${bagsLabel}`);
+    toast(`Rozpakowano: ${parts.join(', ')}`);
   };
 
   const addExpiringToList = () => {
@@ -83,17 +116,61 @@ export function StockScreen({ place }: { place: Place }) {
     toast('Dodano do listy zakupów');
   };
 
-  const renderStepper = (e: Entry) => (
-    <QtyStepper qty={e.s.qty} name={e.p.name} onChange={(delta) => dispatch({ type: 'stockAdjust', stockId: e.s.id, delta })} />
-  );
+  // Ostatnia sztuka: zamiast po cichu usunąć produkt, pytamy, czy zjedzony czy wyrzucony.
+  const adjust = (e: Entry, delta: number) => {
+    if (delta < 0 && e.s.qty <= 1) {
+      setOpenId(e.s.id);
+      return;
+    }
+    dispatch({ type: 'stockAdjust', stockId: e.s.id, delta });
+  };
 
-  const expiryTag = (e: Entry) =>
-    e.s.expires && daysUntil(e.s.expires) <= 2 ? (
-      <span className={daysUntil(e.s.expires) < 0 ? 'tag red' : 'tag amber'}>{expiryLabel(e.s.expires)}</span>
-    ) : null;
+  const byExpiry = [...visible].sort((a, b) => {
+    const ea = a.s.expires;
+    const eb = b.s.expires;
+    if (ea && eb && ea !== eb) return ea < eb ? -1 : 1;
+    if (ea && !eb) return -1;
+    if (!ea && eb) return 1;
+    return a.p.name.localeCompare(b.p.name, 'pl');
+  });
 
-  const promoTag = (e: Entry) =>
-    promoByProduct.has(e.p.id) ? <span className="tag red">-{promoByProduct.get(e.p.id)}%</span> : null;
+  const openEntry = openId ? placeEntries.find((e) => e.s.id === openId) : undefined;
+  const peekEntry = peekId ? placeEntries.find((e) => e.s.id === peekId) : undefined;
+
+  const removeEntry = (entry: Entry, reason: 'eaten' | 'trashed') => {
+    const ts = Date.now();
+    const item = entry.s;
+    dispatch({ type: 'stockRemove', stockId: item.id, reason, ts });
+    toast(`${entry.p.name}: ${reason === 'eaten' ? 'zjedzone' : 'wyrzucone'}`, {
+      label: 'Cofnij',
+      onClick: () => dispatch({ type: 'stockRestore', item, eventTs: ts }),
+    });
+    setOpenId(null);
+    setPeekId(null);
+  };
+  const addEntryToList = (entry: Entry) => {
+    dispatch({ type: 'listAdd', productId: entry.p.id });
+    toast('Dodano do listy zakupów', {
+      label: 'Cofnij',
+      onClick: () => dispatch({ type: 'listUndoAdd', productId: entry.p.id }),
+    });
+    setOpenId(null);
+    setPeekId(null);
+  };
+  const swipe = (entry: Entry, direction: 'list' | 'eaten') =>
+    direction === 'eaten' ? removeEntry(entry, 'eaten') : addEntryToList(entry);
+  const moveEntry = (entry: Entry) => {
+    const target: Place = isFridge ? 'pantry' : 'fridge';
+    dispatch({ type: 'stockMove', stockId: entry.s.id, place: target });
+    toast(`${entry.p.name} przeniesione ${isFridge ? 'do szafek' : 'do lodówki'}`);
+    setPeekId(null);
+  };
+  /** Z podglądu do pełnej karty produktu (opcjonalnie od razu z wyborem daty). */
+  const openFromPeek = (entry: Entry, focusDate: boolean) => {
+    setPeekId(null);
+    setFocusDate(focusDate);
+    setOpenId(entry.s.id);
+  };
 
   return (
     <section className="screen" aria-label={PLACE_LABEL[place].title}>
@@ -103,74 +180,33 @@ export function StockScreen({ place }: { place: Place }) {
           <button type="button" className="icon-btn" aria-label="Szukaj" onClick={() => setSearchOpen((o) => !o)}>
             <Search size={22} aria-hidden="true" />
           </button>
+          <button type="button" className="icon-btn" aria-label="Widok" onClick={() => setViewOpen(true)}>
+            <LayoutGrid size={22} aria-hidden="true" />
+          </button>
           <button type="button" className="icon-btn" aria-label={`Dodaj produkt ${PLACE_LABEL[place].added}`} onClick={() => setAdding(true)}>
             <Plus size={24} aria-hidden="true" />
           </button>
         </div>
       </header>
 
-      {!isFridge ? (
-        <Chips
-          options={[
-            { id: 'stock' as const, label: 'Szafki' },
-            { id: 'bags' as const, label: `Siatki · ${bagsCount}` },
-          ]}
-          value={view}
-          onChange={setView}
-        />
-      ) : null}
-
-      {searchOpen && view === 'stock' ? (
+      {searchOpen ? (
         <SearchField value={query} onChange={setQuery} placeholder="Szukaj w domu" autoFocus />
       ) : null}
 
-      {view === 'bags' && !isFridge ? (
-        <>
-          {bagsCount === 0 ? (
-            <div className="empty">
-              <ShoppingBag size={32} aria-hidden="true" />
-              <h2>Siatki są puste</h2>
-              <p>Po zakończeniu zakupów odhaczone produkty z listy trafią tutaj.</p>
-            </div>
-          ) : (
-            <>
-              <button type="button" className="btn wide" onClick={() => { unpackAll(); setView('stock'); }}>
-                Rozpakuj wszystko
-              </button>
-              <ul className="rows">
-                {bagEntries.map((e) => (
-                  <li key={e.s.id} className="card row">
-                    <ProductImage product={e.p} />
-                    <div className="grow">
-                      <div className="name">{e.p.name}</div>
-                      <div className="meta">{meta(e.p)} · {e.s.qty} szt.</div>
-                    </div>
-                    <div className="stack">
-                      <button type="button" className="btn small ghost" onClick={() => dispatch({ type: 'unpack', stockId: e.s.id, place: 'fridge' })}>
-                        Lodówka
-                      </button>
-                      <button type="button" className="btn small ghost" onClick={() => dispatch({ type: 'unpack', stockId: e.s.id, place: 'pantry' })}>
-                        Szafka
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </>
-      ) : (
+      {(
         <>
           {bagsCount > 0 ? (
             <div className="card row bags-card">
-              <div className="thumb" style={{ width: 44, height: 44, borderRadius: 14 }}>
-                <ShoppingBag size={21} aria-hidden="true" />
-              </div>
-              <div className="grow">
-                <div className="name">{bagsLabel} w siatkach</div>
-                <div className="meta">Z ostatnich zakupów</div>
-              </div>
-              <button type="button" className="btn" onClick={unpackAll}>
+              <button type="button" className="card-hit bags-hit" onClick={() => setBagOpen(true)}>
+                <span className="thumb" style={{ width: 44, height: 44, borderRadius: 14 }}>
+                  <ShoppingBag size={21} aria-hidden="true" />
+                </span>
+                <span className="grow">
+                  <span className="name">{bagsLabel} w siatkach</span>
+                  <span className="meta">Z ostatnich zakupów</span>
+                </span>
+              </button>
+              <button type="button" className="btn" onClick={() => unpackAll()}>
                 Rozpakuj
               </button>
             </div>
@@ -181,11 +217,7 @@ export function StockScreen({ place }: { place: Place }) {
               <ProductImage product={expiring[0].p} size={76} />
               <div className="grow">
                 <div className="meta">Kończy się ważność</div>
-                <div className="name big">
-                  {expiring.length <= 2
-                    ? expiring.map((e) => e.p.name).join(' i ')
-                    : `${expiring[0].p.name}, ${expiring[1].p.name} i ${expiring.length - 2} ${pluralPl(expiring.length - 2, 'inny', 'inne', 'innych')}`}
-                </div>
+                <div className="name big">{joinNames(expiring.map((e) => e.p.name))}</div>
                 <button type="button" className="btn small" onClick={addExpiringToList}>
                   Dodaj do listy
                 </button>
@@ -193,48 +225,64 @@ export function StockScreen({ place }: { place: Place }) {
             </div>
           ) : null}
 
-          {presentCategories.length > 1 ? <Chips options={chipOptions} value={cat} onChange={setCat} /> : null}
+          {lowStock.length > 0 && cat === 'all' && !q ? (
+            <div className="card hero">
+              <div className="thumb warn" style={{ width: 76, height: 76, borderRadius: 23 }}>
+                <ShoppingBasket size={36} strokeWidth={1.75} aria-hidden="true" />
+              </div>
+              <div className="grow">
+                <div className="meta">Kończy się w domu</div>
+                <div className="name big">{joinNames(lowStock.map((s) => s.product.name))}</div>
+                <button type="button" className="btn small" onClick={addLowStockToList}>
+                  Dodaj do listy
+                </button>
+              </div>
+              <button type="button" className="icon-btn small" aria-label="Nie teraz" onClick={snoozeLowStock}>
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+          ) : null}
 
-          {groups.length === 0 ? (
+          {presentCategories.length > 1 ? <IconChips options={chipOptions} value={cat} onChange={setCat} label="Kategorie" /> : null}
+
+          {visible.length === 0 ? (
             <div className="empty">
               <h2>{q || cat !== 'all' ? 'Nic nie pasuje' : isFridge ? 'Lodówka jest pusta' : 'Szafki są puste'}</h2>
               <p>{q || cat !== 'all' ? 'Zmień wyszukiwanie lub kategorię.' : 'Dodaj pierwszy produkt przyciskiem plus.'}</p>
             </div>
+          ) : prefs.order === 'expiry' ? (
+            <StockList
+              key={`${prefs.layout}-${prefs.order}`}
+              layout={prefs.layout}
+              entries={byExpiry}
+              promos={promoByProduct}
+              onOpen={(id) => {
+                setFocusDate(false);
+                setOpenId(id);
+              }}
+              onPeek={setPeekId}
+              onSwipe={swipe}
+              onAdjust={adjust}
+            />
           ) : (
             <div className="sections">
               {groups.map((g) => (
-              <section className="section" key={g.category.id}>
-                <h2 className="cat-label">{g.category.label}</h2>
-                {isFridge ? (
-                  <ul className="grid">
-                    {g.entries.map((e) => (
-                      <li key={e.s.id} className="card tile">
-                        {promoByProduct.has(e.p.id) ? <span className="tile-badge">-{promoByProduct.get(e.p.id)}%</span> : null}
-                        <ProductImage product={e.p} size={64} />
-                        <div className="name">{e.p.name}</div>
-                        <div className="meta">{meta(e.p)}</div>
-                        {expiryTag(e)}
-                        {renderStepper(e)}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <ul className="rows">
-                    {g.entries.map((e) => (
-                      <li key={e.s.id} className="card row">
-                        <ProductImage product={e.p} />
-                        <div className="grow">
-                          <div className="name">{e.p.name}</div>
-                          <div className="meta">
-                            {meta(e.p)} {promoTag(e)} {expiryTag(e)}
-                          </div>
-                        </div>
-                        {renderStepper(e)}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
+                <section className="section" key={g.category.id}>
+                  <h2 className="cat-label">{g.category.label}</h2>
+                  <StockList
+                    key={prefs.layout}
+                    layout={prefs.layout}
+                    entries={g.entries}
+                    promos={promoByProduct}
+                    onOpen={(id) => {
+                      setFocusDate(false);
+                      setOpenId(id);
+                    }}
+                    onPeek={setPeekId}
+              onSwipe={swipe}
+                    onAdjust={adjust}
+                  />
+                </section>
               ))}
             </div>
           )}
@@ -255,7 +303,46 @@ export function StockScreen({ place }: { place: Place }) {
         </>
       )}
 
+      {bagOpen && bagsCount > 0 ? (
+        <Sheet title="Siatki" onClose={() => setBagOpen(false)}>
+          <BagView
+            entries={bagEntries}
+            preferred={(entry) => preferredPlace(state.habits, entry.p)}
+            onUnpackAll={(overrides) => {
+              unpackAll(overrides);
+              setBagOpen(false);
+            }}
+          />
+        </Sheet>
+      ) : null}
       {adding ? <AddProductSheet place={place} onClose={() => setAdding(false)} /> : null}
+      {viewOpen ? (
+        <ViewSheet prefs={prefs} onChange={setPrefs} onClose={() => setViewOpen(false)} />
+      ) : null}
+      {openEntry ? (
+        <ItemSheet
+          entry={openEntry}
+          onClose={() => setOpenId(null)}
+          onAdjust={(delta) => dispatch({ type: 'stockAdjust', stockId: openEntry.s.id, delta })}
+          onExpiry={(expires) => dispatch({ type: 'stockExpiry', stockId: openEntry.s.id, expires })}
+          onRemove={(reason) => removeEntry(openEntry, reason)}
+          onAddToList={() => addEntryToList(openEntry)}
+          focusDate={focusDate}
+        />
+      ) : null}
+      {peekEntry ? (
+        <PeekOverlay
+          entry={peekEntry}
+          place={place}
+          onClose={() => setPeekId(null)}
+          onEat={() => removeEntry(peekEntry, 'eaten')}
+          onTrash={() => removeEntry(peekEntry, 'trashed')}
+          onList={() => addEntryToList(peekEntry)}
+          onMove={() => moveEntry(peekEntry)}
+          onDate={() => openFromPeek(peekEntry, true)}
+          onMore={() => openFromPeek(peekEntry, false)}
+        />
+      ) : null}
     </section>
   );
 }
