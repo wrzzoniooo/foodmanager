@@ -1613,7 +1613,13 @@ button:disabled {
 .swipe-bg.to-eaten .swipe-label.end {
   display: inline-flex;
 }
+.swipe-bg {
+  z-index: 0;
+  pointer-events: none;
+}
 .swipe-fg {
+  position: relative;
+  z-index: 1;
   touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
