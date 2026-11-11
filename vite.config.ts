@@ -9,6 +9,7 @@ const base = process.env.BASE_PATH ?? '/';
 
 export default defineConfig(({ mode }) => ({
   base,
+  define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? '1.0.0') },
   plugins: [
     react(),
     ...(mode === 'phone' ? [basicSsl()] : []),

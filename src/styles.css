@@ -1754,3 +1754,7 @@ button:disabled {
   font-size: var(--fs-lead);
   color: var(--text);
 }
+
+.meta.version {
+  text-align: center;
+}

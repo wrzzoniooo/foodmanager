@@ -49,8 +49,8 @@ export function hash(s: string): string {
 export const eventId = (e: UsageEvent) => `${e.ts}-${e.productId}-${e.delta}-${e.kind ?? ''}`;
 export const purchaseId = (p: PurchaseEvent) => `${p.ts}-${p.productId}-${p.qty}`;
 
-/** Produkty z katalogu Lidla są w aplikacji, więc ich nie wysyłamy. */
-const synced = (p: Product) => !p.id.startsWith('lidl-');
+/** Produkty z katalogu są w aplikacji na każdym telefonie, więc ich nie wysyłamy. */
+const synced = (p: Product) => !p.catalog && !p.id.startsWith('lidl-');
 
 export function collect(state: AppState): Map<string, Entity> {
   const out = new Map<string, Entity>();

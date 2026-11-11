@@ -29,6 +29,8 @@ export interface Product {
   url?: string;
   /** Kod kreskowy (EAN), gdy produkt pochodzi z Open Food Facts */
   barcode?: string;
+  /** Produkt z katalogu wczytanego razem z aplikacją: każdy telefon go ma, więc nie synchronizujemy go. */
+  catalog?: boolean;
 }
 
 export interface StockItem {

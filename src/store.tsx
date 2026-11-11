@@ -183,7 +183,7 @@ function reducer(state: AppState, action: Action): AppState {
     case 'syncReset':
       // Dołączenie do wspólnego gospodarstwa: dane z tego telefonu ustępują wspólnym, zostaje tylko katalog Lidla.
       return {
-        products: state.products.filter((p) => p.id.startsWith('lidl-')),
+        products: state.products.filter((p) => p.catalog || p.id.startsWith('lidl-')),
         stock: [],
         list: [],
         events: [],

@@ -22,6 +22,10 @@ Katalog produktów jest plikiem `public/data/lidl.json`, wczytywanym raz razem z
 
 **Ograniczenie:** Lidl nie udostępnia pełnego asortymentu. Z publicznych stron wychodzi ok. 15 produktów spożywczych na uruchomienie (reszta listy ładuje się zapytaniami, których `robots.txt` zabrania). Gazetki spożywcze są obrazkami bez danych produktów. Pełniejszy katalog wymaga dodatkowych źródeł (patrz plan niżej).
 
+## Aplikacja Android (APK)
+
+Plik APK buduje GitHub (`.github/workflows/apk.yml`, Capacitor): po wypchnięciu znacznika wersji (`git tag v1.0.0 && git push origin v1.0.0`) w zakładce Releases pojawia się `Spizarnia.apk`. APK jest podpisany kluczem debug, więc kolejna wersja instaluje się po odinstalowaniu poprzedniej (dane ze wspólnej bazy wracają po połączeniu telefonów).
+
 ## Uruchomienie
 
 ```bash
