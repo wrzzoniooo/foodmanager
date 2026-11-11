@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { LayoutGrid, Plus, Search, ShoppingBag, ShoppingBasket, X, type LucideIcon } from 'lucide-react';
+import { LayoutGrid, Plus, Search, Settings, ShoppingBag, ShoppingBasket, X, type LucideIcon } from 'lucide-react';
 import { useStore } from '../store';
 import { CATEGORIES } from '../categories';
 import { preferredPlace } from '../habits';
@@ -8,6 +8,7 @@ import { daysUntil, pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
 import { ItemSheet } from '../components/ItemSheet';
 import { PeekOverlay } from '../components/PeekOverlay';
+import { SettingsSheet } from '../components/SettingsSheet';
 import { BagView } from '../components/BagView';
 import { StockList, type Entry } from '../components/StockItems';
 import { ViewSheet } from '../components/ViewSheet';
@@ -39,6 +40,7 @@ export function StockScreen({ place }: { place: Place }) {
   const [bagOpen, setBagOpen] = useState(false);
   const [prefs, setPrefs] = useViewPrefs(place);
   const [viewOpen, setViewOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [peekId, setPeekId] = useState<string | null>(null);
   const [focusDate, setFocusDate] = useState(false);
@@ -175,6 +177,9 @@ export function StockScreen({ place }: { place: Place }) {
           <button type="button" className="icon-btn" aria-label="Widok" onClick={() => setViewOpen(true)}>
             <LayoutGrid size={22} aria-hidden="true" />
           </button>
+          <button type="button" className="icon-btn" aria-label="Ustawienia" onClick={() => setSettingsOpen(true)}>
+            <Settings size={22} aria-hidden="true" />
+          </button>
           <button type="button" className="icon-btn" aria-label={`Dodaj produkt ${PLACE_LABEL[place].added}`} onClick={() => setAdding(true)}>
             <Plus size={24} aria-hidden="true" />
           </button>
@@ -306,6 +311,7 @@ export function StockScreen({ place }: { place: Place }) {
         </Sheet>
       ) : null}
       {adding ? <AddProductSheet place={place} onClose={() => setAdding(false)} /> : null}
+      {settingsOpen ? <SettingsSheet onClose={() => setSettingsOpen(false)} /> : null}
       {viewOpen ? (
         <ViewSheet prefs={prefs} onChange={setPrefs} onClose={() => setViewOpen(false)} />
       ) : null}

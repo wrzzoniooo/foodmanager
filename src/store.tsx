@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNo
 import type { AppState, Place, Product, StockItem } from './types';
 import { createSeed } from './data/seed';
 import { preferredPlace, recordPlace } from './habits';
+import { applyRows, type Row } from './sync/rows';
 
 const STORAGE_KEY = 'spizarnia.v1';
 
@@ -22,6 +23,8 @@ type Action =
   | { type: 'dismissSuggestion'; productId: string }
   | { type: 'catalogMerge'; products: Product[] }
   | { type: 'productAdd'; product: Product }
+  | { type: 'remoteApply'; rows: Row[] }
+  | { type: 'syncReset' }
   | { type: 'clearAll' }
   | { type: 'reset' };
 
@@ -175,6 +178,19 @@ function reducer(state: AppState, action: Action): AppState {
       return state.products.some((p) => p.id === action.product.id)
         ? state
         : { ...state, products: [...state.products, action.product] };
+    case 'remoteApply':
+      return applyRows(state, action.rows);
+    case 'syncReset':
+      // Dołączenie do wspólnego gospodarstwa: dane z tego telefonu ustępują wspólnym, zostaje tylko katalog Lidla.
+      return {
+        products: state.products.filter((p) => p.id.startsWith('lidl-')),
+        stock: [],
+        list: [],
+        events: [],
+        purchases: [],
+        habits: {},
+        dismissed: {},
+      };
     case 'clearAll': {
       // Czyści dane demo: zostają tylko produkty z katalogu Lidla.
       const products = state.products.filter(isRealProduct);

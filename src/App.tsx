@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { buildSuggestions } from './insights';
 import { StoreProvider, useStore } from './store';
+import { SyncProvider } from './sync/SyncProvider';
 import { CatalogProvider } from './catalog';
 import { BottomNav, ToastProvider, type Tab } from './components/ui';
 import { StockScreen } from './screens/StockScreen';
@@ -30,11 +31,13 @@ function Shell() {
 export default function App() {
   return (
     <StoreProvider>
+      <SyncProvider>
       <CatalogProvider>
         <ToastProvider>
           <Shell />
         </ToastProvider>
       </CatalogProvider>
+      </SyncProvider>
     </StoreProvider>
   );
 }

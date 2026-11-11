@@ -11,7 +11,8 @@ type BarcodeDetectorCtor = new (options: { formats: string[] }) => BarcodeDetect
 
 type Problem = 'engine' | 'insecure' | 'denied';
 
-const FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e'] as const;
+const BARCODE_FORMATS = ['ean_13', 'ean_8', 'upc_a', 'upc_e'] as const;
+export const QR_FORMATS = ['qr_code'] as const;
 
 const PROBLEM_TEXT: Record<Problem, string> = {
   engine: 'Nie udało się uruchomić skanera. Wpisz kod ręcznie.',
@@ -23,9 +24,9 @@ const PROBLEM_TEXT: Record<Problem, string> = {
  * Tworzy dekoder kodów. Gdy przeglądarka ma wbudowany BarcodeDetector (Chrome na Androidzie), używa go;
  * w pozostałych (iPhone, komputery) używa biblioteki opartej na ZXing, ładowanej dopiero przy skanowaniu.
  */
-export async function createDetector(): Promise<BarcodeDetectorLike> {
+export async function createDetector(formats: readonly string[] = BARCODE_FORMATS): Promise<BarcodeDetectorLike> {
   const Native = (window as unknown as { BarcodeDetector?: BarcodeDetectorCtor }).BarcodeDetector;
-  if (Native) return new Native({ formats: [...FORMATS] });
+  if (Native) return new Native({ formats: [...formats] });
   const [lib, wasm] = await Promise.all([
     import('barcode-detector/ponyfill'),
     import('../../node_modules/zxing-wasm/dist/reader/zxing_reader.wasm?url'),
@@ -34,7 +35,7 @@ export async function createDetector(): Promise<BarcodeDetectorLike> {
   lib.setZXingModuleOverrides({
     locateFile: (path: string, prefix: string) => (path.endsWith('.wasm') ? wasmUrl : prefix + path),
   });
-  return new lib.BarcodeDetector({ formats: [...FORMATS] }) as unknown as BarcodeDetectorLike;
+  return new lib.BarcodeDetector({ formats: [...formats] } as ConstructorParameters<typeof lib.BarcodeDetector>[0]) as unknown as BarcodeDetectorLike;
 }
 
 /** Skaner kodów kreskowych: widok z aparatu w oknie aplikacji. */
@@ -43,7 +44,13 @@ export function Scanner({
   onManual,
   onBack,
   onClose,
+  formats = BARCODE_FORMATS,
+  hint = 'Skieruj aparat na kod kreskowy',
+  manualLabel = 'Wpisz kod ręcznie',
 }: {
+  formats?: readonly string[];
+  hint?: string;
+  manualLabel?: string;
   onDetect: (code: string) => void;
   onManual: () => void;
   onBack: () => void;
@@ -86,7 +93,7 @@ export function Scanner({
         await video.play();
         let detector: BarcodeDetectorLike;
         try {
-          detector = await createDetector();
+          detector = await createDetector(formats);
         } catch {
           if (!stopped) setProblem('engine');
           return;
@@ -140,7 +147,7 @@ export function Scanner({
           </p>
         ) : (
           <>
-            <p className="scan-hint">Skieruj aparat na kod kreskowy</p>
+            <p className="scan-hint">{hint}</p>
             <div className="scan-frame" aria-hidden="true">
               <span className="corner tl" />
               <span className="corner tr" />
@@ -153,7 +160,7 @@ export function Scanner({
       </div>
       <div className="scan-bottom">
         <button type="button" className="btn wide" onClick={onManual}>
-          Wpisz kod ręcznie
+          {manualLabel}
         </button>
       </div>
     </div>

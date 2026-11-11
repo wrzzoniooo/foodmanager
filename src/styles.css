@@ -1709,3 +1709,41 @@ button:disabled {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s2);
 }
+
+/* ----- połączenie telefonów: kod QR i klucz ----- */
+.qr-box {
+  width: 220px;
+  margin: 0 auto;
+  padding: var(--s4);
+  background: #fff;
+  border-radius: 24px;
+}
+.qr-box svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.key-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-body);
+  letter-spacing: 1px;
+}
+.input.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-body);
+  letter-spacing: 1px;
+}
+.confirm-text {
+  font-size: var(--fs-lead);
+  color: var(--text);
+}

@@ -1,4 +1,3 @@
-import { useTheme, type Theme } from '../theme';
 import type { Layout, Order, ViewPrefs } from '../viewPrefs';
 import { Sheet } from './ui';
 
@@ -13,12 +12,6 @@ const ORDERS: { id: Order; label: string }[] = [
   { id: 'category', label: 'Wg kategorii' },
 ];
 
-const THEME_OPTIONS: { id: Theme; label: string }[] = [
-  { id: 'light', label: 'Jasny' },
-  { id: 'dark', label: 'Ciemny' },
-  { id: 'auto', label: 'Auto' },
-];
-
 export function ViewSheet({
   prefs,
   onChange,
@@ -28,7 +21,6 @@ export function ViewSheet({
   onChange: (patch: Partial<ViewPrefs>) => void;
   onClose: () => void;
 }) {
-  const [theme, setTheme] = useTheme();
   return (
     <Sheet title="Widok" onClose={onClose}>
       <div className="sheet-body">
@@ -66,23 +58,6 @@ export function ViewSheet({
                   aria-checked={prefs.order === o.id}
                   className={prefs.order === o.id ? 'on' : undefined}
                   onClick={() => onChange({ order: o.id })}
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
-          </section>
-          <section className="section">
-            <div className="lab">Motyw</div>
-            <div className="seg" role="radiogroup" aria-label="Motyw aplikacji">
-              {THEME_OPTIONS.map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={theme === o.id}
-                  className={theme === o.id ? 'on' : undefined}
-                  onClick={() => setTheme(o.id)}
                 >
                   {o.label}
                 </button>
