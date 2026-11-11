@@ -15,7 +15,7 @@ const PLACE_TEXT: Record<Place, { title: string; added: string; short: string }>
   pantry: { title: 'Dodaj do szafek', added: 'do szafek', short: 'szafek' },
 };
 
-const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ id: c.id, label: c.label.split(' i ')[0].split(',')[0] }));
+const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ id: c.id, label: c.short }));
 const PLACE_OPTIONS: { id: Place; label: string }[] = [
   { id: 'fridge', label: 'Lodówka' },
   { id: 'pantry', label: 'Szafki' },

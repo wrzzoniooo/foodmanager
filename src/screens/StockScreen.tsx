@@ -67,7 +67,7 @@ export function StockScreen({ place }: { place: Place }) {
   const presentCategories = CATEGORIES.filter((c) => placeEntries.some((e) => e.p.category === c.id));
   const chipOptions: { id: CategoryId | 'all'; label: string; Icon: LucideIcon }[] = [
     { id: 'all', label: 'Wszystko', Icon: LayoutGrid },
-    ...presentCategories.map((c) => ({ id: c.id, label: c.label.split(' i ')[0].split(',')[0], Icon: c.Icon })),
+    ...presentCategories.map((c) => ({ id: c.id, label: c.short, Icon: c.Icon })),
   ];
 
   const expiring = isFridge

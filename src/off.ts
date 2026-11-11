@@ -32,6 +32,7 @@ export function offCategory(tags: string[] = []): CategoryId {
   if (has(/fruits/)) return 'owoce';
   if (has(/vegetables/)) return 'warzywa';
   if (has(/breads|bakery|pastries|viennoiseries/)) return 'pieczywo';
+  if (has(/salty-snacks|chips|crisps|crackers|pretzels|breadsticks|peanuts|nuts|popcorn|appetizers/)) return 'slone';
   if (has(/snacks|sweet|chocolates|biscuits|candies|confectioneries|desserts/)) return 'slodycze';
   if (has(/sauces|oils|spices|condiments|dressings|vinegars/)) return 'sosy';
   if (has(/canned|meals|soups/)) return 'konserwy';

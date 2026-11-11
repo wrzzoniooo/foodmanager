@@ -11,6 +11,7 @@ export type CategoryId =
   | 'napoje'
   | 'mrozonki'
   | 'slodycze'
+  | 'slone'
   | 'inne';
 
 export type Place = 'fridge' | 'pantry';
