@@ -1,39 +1,39 @@
 :root {
-  /* Wszystkie kolory są podane wprost (jeden, jasny styl). Deklaracja "light dark" mówi przeglądarce, że strona sama
-     obsługuje tryb ciemny, więc nie przemalowuje jej automatycznie (Chrome / Samsung Internet robią to ze stronami
-     zadeklarowanymi jako tylko jasne). */
+  /* Paleta Terakota (jasna). Ciemna wersja jest niżej: data-theme="dark" albo "auto" przy ciemnym telefonie. */
   color-scheme: light;
-  --bg: #f1e8d6;
-  --card: #fbf6ea;
-  --sage: #667a47;
-  --sage-dark: #4f6b2e;
-  --sage-light: #d5ddb4;
-  --sage-chip: #e2e5c6;
-  --nav-bg: #dde1be;
-  --text: #2f3a22;
-  --muted: #5e6853;
-  --red: #b94a28;
-  --amber-bg: #f3d9a4;
+  --bg: #f6ede3;
+  --card: #fff9f2;
+  --sage: #b65a3c;
+  --sage-dark: #8a3f27;
+  --sage-light: #f0d9cb;
+  --sage-chip: #f0dfd1;
+  --nav-bg: #ebd3c3;
+  --text: #3a2a22;
+  --muted: #7a6358;
+  --red: #b3402a;
+  --amber-bg: #f3ddaa;
   --amber-text: #6b4a0f;
-  --ink-sage: #3e4a2b;
+  --ink-sage: #6b3a28;
   --on-sage: #fff;
   --on-red: #fff;
-  --nav-ink: #4a5a36;
-  --scrim: rgba(47, 58, 34, 0.45);
-  --peek-scrim: rgba(241, 232, 214, 0.6);
-  --peek-scrim-solid: rgba(241, 232, 214, 0.9);
-  --badge-red-bg: #f4d3c4;
-  --badge-red-ink: #8a3318;
-  --badge-green-bg: #dfe6c4;
+  --nav-ink: #7a4632;
+  --scrim: rgba(58, 42, 34, 0.45);
+  --peek-scrim: rgba(246, 237, 227, 0.6);
+  --peek-scrim-solid: rgba(246, 237, 227, 0.9);
+  --badge-red-bg: #f7d5c8;
+  --badge-red-ink: #8a2f1a;
+  --badge-green-bg: #dce6cf;
   --badge-green-ink: #3f5a23;
-  --track: #e6dcc4;
+  --track: #ebd9ca;
   --fresh-amber: #c98a1a;
-  --select-bg: #e8edd0;
-  --mini: #c9d3a3;
-  --paper: #fffaf0;
-  --dash: #d9cdb0;
-  --bag-body: #a9ba82;
-  --bag-dark: #7d9158;
+  --ok: #5f7f4a;
+  --select-bg: #f5ddd0;
+  --mini: #e7bfa9;
+  --paper: #fffaf4;
+  --dash: #e3cbb8;
+  --bag-body: #d8a487;
+  --bag-dark: #b97f5f;
+  --tile-line: color-mix(in srgb, var(--sage) 14%, transparent);
   --font-title: Georgia, 'Times New Roman', serif;
   --nav-h: 76px;
   /* Skala odstępów (siatka 4 px). Odstępy wyłącznie przez gap/padding, bez ujemnych marginesów. */
@@ -63,7 +63,10 @@
 html,
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--bg);
+  /* Tekstura Kafelki: cienkie linie jak kafelki kuchenne, tylko na tle ekranu. */
+  background-image: linear-gradient(var(--tile-line) 1px, transparent 1px), linear-gradient(90deg, var(--tile-line) 1px, transparent 1px);
+  background-size: 30px 30px;
   color: var(--text);
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: var(--fs-lead);
@@ -626,7 +629,7 @@ button:disabled {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: #1b2214;
+  background: #21160f;
   color: var(--bg);
   display: flex;
   flex-direction: column;
@@ -657,14 +660,14 @@ button:disabled {
   font-size: var(--fs-title);
   padding: var(--s1) var(--s3);
   border-radius: 99px;
-  background: rgba(27, 34, 20, 0.6);
+  background: rgba(33, 22, 15, 0.6);
 }
 .scan-btn {
   width: 44px;
   height: 44px;
   border: 0;
   border-radius: 50%;
-  background: rgba(27, 34, 20, 0.6);
+  background: rgba(33, 22, 15, 0.6);
   color: var(--bg);
   display: inline-flex;
   align-items: center;
@@ -681,7 +684,7 @@ button:disabled {
   font-size: var(--fs-body);
   padding: var(--s1) var(--s3);
   border-radius: 99px;
-  background: rgba(27, 34, 20, 0.6);
+  background: rgba(33, 22, 15, 0.6);
 }
 .scan-sub {
   font-size: var(--fs-meta);
@@ -738,7 +741,7 @@ button:disabled {
   max-width: 320px;
   padding: var(--s4);
   border-radius: 20px;
-  background: rgba(27, 34, 20, 0.7);
+  background: rgba(33, 22, 15, 0.7);
   text-align: center;
   font-size: var(--fs-lead);
 }
@@ -938,7 +941,7 @@ button:disabled {
   background: var(--fresh-amber);
 }
 .fresh i.green {
-  background: var(--sage);
+  background: var(--ok);
 }
 
 /* ----- okno Widok i karta produktu ----- */
@@ -1448,73 +1451,77 @@ button:disabled {
 
 /* ----- ciemny motyw (wybór w oknie Widok: Jasny, Ciemny albo Auto, czyli jak telefon) ----- */
 :root[data-theme='dark'] {
-    color-scheme: dark;
-    --bg: #1d2318;
-    --card: #283021;
-    --sage: #8aa467;
-    --sage-dark: #b4c98e;
-    --sage-light: #38442d;
-    --sage-chip: #36422c;
-    --nav-bg: #2f3a26;
-    --text: #ece4d0;
-    --muted: #a6b093;
-    --red: #e0764f;
-    --amber-bg: #5c4413;
-    --amber-text: #f3d9a4;
-    --ink-sage: #cdd8b0;
-    --on-sage: #1d2318;
-    --on-red: #2b1208;
-    --nav-ink: #c3d0a6;
-    --scrim: rgba(0, 0, 0, 0.6);
-    --peek-scrim: rgba(29, 35, 24, 0.6);
-    --peek-scrim-solid: rgba(29, 35, 24, 0.92);
-    --badge-red-bg: #5a2c1c;
-    --badge-red-ink: #f3b9a3;
-    --badge-green-bg: #36422c;
-    --badge-green-ink: #b4c98e;
-    --track: #3b4531;
-    --fresh-amber: #d9a03a;
-    --select-bg: #33402a;
-    --mini: #4a5a38;
-    --paper: #262e20;
-    --dash: #4a5540;
-    --bag-body: #5f7344;
-    --bag-dark: #4a5c36;
+  color-scheme: dark;
+  --bg: #261b17;
+  --card: #33241f;
+  --sage: #d2775a;
+  --sage-dark: #eda58a;
+  --sage-light: #4a3029;
+  --sage-chip: #45302a;
+  --nav-bg: #3c2a24;
+  --text: #f1e4da;
+  --muted: #b79f92;
+  --red: #e3856a;
+  --amber-bg: #5c4413;
+  --amber-text: #f3d9a4;
+  --ink-sage: #ebcbbc;
+  --on-sage: #241612;
+  --on-red: #2b1208;
+  --nav-ink: #e3bfae;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --peek-scrim: rgba(38, 27, 23, 0.6);
+  --peek-scrim-solid: rgba(38, 27, 23, 0.92);
+  --badge-red-bg: #5a2c1c;
+  --badge-red-ink: #f3b9a3;
+  --badge-green-bg: #34402b;
+  --badge-green-ink: #b4d49a;
+  --track: #4a352d;
+  --fresh-amber: #d9a03a;
+  --ok: #8fb47a;
+  --select-bg: #4a2f27;
+  --mini: #6a4338;
+  --paper: #2e201b;
+  --dash: #5a4036;
+  --bag-body: #8a5a44;
+  --bag-dark: #6e4533;
+  --tile-line: color-mix(in srgb, var(--sage) 10%, transparent);
 }
 @media (prefers-color-scheme: dark) {
   :root[data-theme='auto'] {
     color-scheme: dark;
-    --bg: #1d2318;
-    --card: #283021;
-    --sage: #8aa467;
-    --sage-dark: #b4c98e;
-    --sage-light: #38442d;
-    --sage-chip: #36422c;
-    --nav-bg: #2f3a26;
-    --text: #ece4d0;
-    --muted: #a6b093;
-    --red: #e0764f;
+    --bg: #261b17;
+    --card: #33241f;
+    --sage: #d2775a;
+    --sage-dark: #eda58a;
+    --sage-light: #4a3029;
+    --sage-chip: #45302a;
+    --nav-bg: #3c2a24;
+    --text: #f1e4da;
+    --muted: #b79f92;
+    --red: #e3856a;
     --amber-bg: #5c4413;
     --amber-text: #f3d9a4;
-    --ink-sage: #cdd8b0;
-    --on-sage: #1d2318;
+    --ink-sage: #ebcbbc;
+    --on-sage: #241612;
     --on-red: #2b1208;
-    --nav-ink: #c3d0a6;
+    --nav-ink: #e3bfae;
     --scrim: rgba(0, 0, 0, 0.6);
-    --peek-scrim: rgba(29, 35, 24, 0.6);
-    --peek-scrim-solid: rgba(29, 35, 24, 0.92);
+    --peek-scrim: rgba(38, 27, 23, 0.6);
+    --peek-scrim-solid: rgba(38, 27, 23, 0.92);
     --badge-red-bg: #5a2c1c;
     --badge-red-ink: #f3b9a3;
-    --badge-green-bg: #36422c;
-    --badge-green-ink: #b4c98e;
-    --track: #3b4531;
+    --badge-green-bg: #34402b;
+    --badge-green-ink: #b4d49a;
+    --track: #4a352d;
     --fresh-amber: #d9a03a;
-    --select-bg: #33402a;
-    --mini: #4a5a38;
-    --paper: #262e20;
-    --dash: #4a5540;
-    --bag-body: #5f7344;
-    --bag-dark: #4a5c36;
+    --ok: #8fb47a;
+    --select-bg: #4a2f27;
+    --mini: #6a4338;
+    --paper: #2e201b;
+    --dash: #5a4036;
+    --bag-body: #8a5a44;
+    --bag-dark: #6e4533;
+    --tile-line: color-mix(in srgb, var(--sage) 10%, transparent);
   }
 }
 

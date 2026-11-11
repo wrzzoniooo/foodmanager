@@ -5,7 +5,7 @@ export type Theme = 'auto' | 'light' | 'dark';
 /** Wybór motywu trzymany tylko na tym telefonie. "auto" = jak ustawienie telefonu lub przeglądarki. */
 const KEY = 'spizarnia.theme.v1';
 const THEMES: Theme[] = ['auto', 'light', 'dark'];
-const BAR_COLOR = { light: '#F1E8D6', dark: '#1d2318' };
+const BAR_COLOR = { light: '#F6EDE3', dark: '#261B17' };
 
 export function loadTheme(): Theme {
   try {
