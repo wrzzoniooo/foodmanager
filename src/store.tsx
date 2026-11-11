@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import type { AppState, Place, Product, StockItem } from './types';
-import { createSeed } from './data/seed';
+import { createSeed, PRODUCTS as DEMO_PRODUCTS } from './data/seed';
 import { preferredPlace, recordPlace } from './habits';
 import { applyRows, type Row } from './sync/rows';
 import { applyReceipt, type ReceiptItem } from './receipt/reconcile';
@@ -218,6 +218,15 @@ function reducer(state: AppState, action: Action): AppState {
   }
 }
 
+/** Produkty przykładowe zapisane w telefonie przed dodaniem zdjęć dostają teraz nazwy i zdjęcia prawdziwych produktów. */
+function withDemoPhotos(products: Product[]): Product[] {
+  const demo = new Map(DEMO_PRODUCTS.map((p) => [p.id, p]));
+  return products.map((p) => {
+    const d = demo.get(p.id);
+    return d && d.imageUrl && !p.imageUrl ? { ...p, name: d.name, brand: d.brand, size: d.size, imageUrl: d.imageUrl } : p;
+  });
+}
+
 function load(): AppState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -229,7 +238,8 @@ function load(): AppState {
         Array.isArray(parsed.list) &&
         Array.isArray(parsed.events)
       ) {
-        return { dismissed: {}, purchases: [], habits: {}, receipts: {}, receiptMap: {}, ...parsed } as AppState;
+        const state = { dismissed: {}, purchases: [], habits: {}, receipts: {}, receiptMap: {}, ...parsed } as AppState;
+        return { ...state, products: withDemoPhotos(state.products) };
       }
     }
   } catch {

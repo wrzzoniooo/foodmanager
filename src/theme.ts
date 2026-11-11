@@ -24,7 +24,22 @@ function resolved(theme: Theme): 'light' | 'dark' {
 /** Ustawia motyw na stronie i kolor paska przeglądarki. */
 export function applyTheme(theme: Theme): void {
   document.documentElement.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', BAR_COLOR[resolved(theme)]);
+  const mode = resolved(theme);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', BAR_COLOR[mode]);
+  void applyNativeBar(mode);
+}
+
+/** W aplikacji Android: ikony i godzina na pasku telefonu są ciemne w jasnym motywie i jasne w ciemnym. */
+async function applyNativeBar(mode: 'light' | 'dark'): Promise<void> {
+  try {
+    const { Capacitor } = await import('@capacitor/core');
+    if (!Capacitor.isNativePlatform()) return;
+    const { StatusBar, Style } = await import('@capacitor/status-bar');
+    await StatusBar.setStyle({ style: mode === 'dark' ? Style.Dark : Style.Light });
+    await StatusBar.setBackgroundColor({ color: BAR_COLOR[mode] });
+  } catch {
+    /* strona w przeglądarce albo brak wtyczki: pasek zostaje jak był */
+  }
 }
 
 export function useTheme(): [Theme, (theme: Theme) => void] {

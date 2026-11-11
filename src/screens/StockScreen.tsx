@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LayoutGrid, Plus, Search, Settings, ShoppingBag, ShoppingBasket, X, type LucideIcon } from 'lucide-react';
 import { useStore } from '../store';
-import { CATEGORIES } from '../categories';
+import { CATEGORIES, defaultPlaceFor } from '../categories';
 import { preferredPlace } from '../habits';
 import { buildSuggestions } from '../insights';
 import { daysUntil, pluralPl } from '../dates';
@@ -66,7 +66,10 @@ export function StockScreen({ place }: { place: Place }) {
     entries: visible.filter((e) => e.p.category === c.id).sort((a, b) => a.p.name.localeCompare(b.p.name, 'pl')),
   })).filter((g) => g.entries.length > 0);
 
-  const presentCategories = CATEGORIES.filter((c) => placeEntries.some((e) => e.p.category === c.id));
+  // Zakładki: kategorie, które są w tym miejscu, oraz te, które zwykle tu trafiają (w szafkach zawsze np. "Słone").
+  const presentCategories = CATEGORIES.filter(
+    (c) => defaultPlaceFor(c.id) === place || placeEntries.some((e) => e.p.category === c.id),
+  );
   const chipOptions: { id: CategoryId | 'all'; label: string; Icon: LucideIcon }[] = [
     { id: 'all', label: 'Wszystko', Icon: LayoutGrid },
     ...presentCategories.map((c) => ({ id: c.id, label: c.short, Icon: c.Icon })),

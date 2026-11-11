@@ -8,6 +8,7 @@ import { AddProductSheet } from '../components/AddProductSheet';
 import { CatalogSearch } from '../components/CatalogSearch';
 import { Collapsible } from '../components/Collapsible';
 import { ReceiptSheet } from '../components/ReceiptSheet';
+import { matchLines } from '../receipt/match';
 import { SettingsSheet } from '../components/SettingsSheet';
 import { ProductImage, QtyStepper, useToast } from '../components/ui';
 import type { ListItem, Product } from '../types';
@@ -55,7 +56,10 @@ export function ListScreen() {
       setSheet('menu');
       return;
     }
-    const existing = state.products.find((p) => p.name.toLocaleLowerCase('pl') === name.toLocaleLowerCase('pl'));
+    // Najpierw ta sama nazwa, potem pewne dopasowanie z katalogu (np. "mleko pilos" daje produkt ze zdjęciem).
+    const exact = state.products.find((p) => p.name.toLocaleLowerCase('pl') === name.toLocaleLowerCase('pl'));
+    const guess = exact ? undefined : matchLines([{ raw: name, qty: 1 }], state.products, state.receiptMap)[0];
+    const existing = exact ?? (guess?.status === 'ok' && guess.productId ? productById(guess.productId) : undefined);
     const product: Product = existing ?? {
       id: `own-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
       name: capitalize(name),
