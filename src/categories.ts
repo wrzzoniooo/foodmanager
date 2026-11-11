@@ -19,7 +19,7 @@ import type { CategoryId, Place } from './types';
 
 /** Gdzie zwykle trzyma się produkt z danej kategorii (gdy nie pytamy użytkownika). */
 export function defaultPlaceFor(category: CategoryId): Place {
-  return ['nabial', 'sery', 'mieso', 'warzywa'].includes(category) ? 'fridge' : 'pantry';
+  return ['nabial', 'sery', 'mieso', 'warzywa', 'mrozonki'].includes(category) ? 'fridge' : 'pantry';
 }
 
 export interface CategoryInfo {

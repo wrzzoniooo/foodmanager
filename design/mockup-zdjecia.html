@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shelfie – makieta zdjęć</title>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style>
+:root {
+  --bg: #f6ede3; --card: #fff9f2; --sage: #b65a3c; --sage-dark: #8a3f27; --sage-light: #f0d9cb; --sage-chip: #f0dfd1;
+  --nav-bg: #ebd3c3; --text: #3a2a22; --muted: #7a6358; --amber-bg: #f3ddaa; --amber-text: #6b4a0f;
+  --badge-red-bg: #f7d5c8; --badge-red-ink: #8a2f1a; --track: #ebd9ca; --mini: #e7bfa9;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px;
+  --tile-line: color-mix(in srgb, var(--sage) 14%, transparent);
+}
+* { box-sizing: border-box; margin: 0; }
+body { background: #d9cfc6; font-family: system-ui, sans-serif; color: var(--text); padding: 24px; }
+.board { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.tag { font-size: 18px; font-weight: 700; color: #3a2a22; }
+.phone { width: 375px; height: 700px; overflow: hidden; border-radius: 28px; background:
+  linear-gradient(var(--tile-line) 1px, transparent 1px) 0 0 / 28px 28px,
+  linear-gradient(90deg, var(--tile-line) 1px, transparent 1px) 0 0 / 28px 28px, var(--bg);
+  padding: 16px; position: relative; box-shadow: 0 8px 30px rgba(58,42,34,.25); }
+.head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.head h1 { font: 400 28px Georgia, serif; color: var(--sage-dark); }
+.head .acts { display: flex; gap: 14px; color: var(--text); }
+.head svg, .chips svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.chips { display: flex; gap: 8px; margin-bottom: 16px; }
+.chip { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; width: 60px; }
+.chip i { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--sage-chip); color: var(--sage-dark); }
+.chip.on i { background: var(--sage); color: #fff; }
+.chip svg { width: 18px; height: 18px; }
+
+.card { background: var(--card); border-radius: 20px; box-shadow: 0 1px 0 rgba(58,42,34,.06); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; list-style: none; padding: 0; }
+.rows { display: flex; flex-direction: column; gap: 8px; list-style: none; padding: 0; }
+.name { font-size: 15px; font-weight: 600; line-height: 1.25; }
+.meta { font-size: 13px; color: var(--muted); }
+.badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--amber-bg); color: var(--amber-text); }
+.badge.red { background: var(--badge-red-bg); color: var(--badge-red-ink); }
+.bar { height: 4px; border-radius: 2px; background: var(--track); overflow: hidden; }
+.bar b { display: block; height: 100%; background: var(--sage); }
+.qty { display: flex; align-items: center; justify-content: space-between; }
+.qty button { width: 34px; height: 34px; border: 0; border-radius: 50%; background: var(--sage-chip); color: var(--text); display: grid; place-items: center; }
+.qty button svg { width: 16px; height: 16px; }
+.qty span { font-size: 15px; font-weight: 600; min-width: 18px; text-align: center; }
+
+/* A: całe opakowanie na białym polu */
+.A .pc { padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.A .ph { position: relative; aspect-ratio: 1 / 1; background: #fff; border-radius: 14px; display: grid; place-items: center; padding: 8px; }
+.A .ph img { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); object-fit: contain; }
+.A .ph { overflow: hidden; }
+.A .ph .badge { position: absolute; top: 8px; left: 8px; }
+.A .pc .t { padding: 0 4px; display: flex; flex-direction: column; gap: 4px; }
+.A .pc .qty { padding: 0 4px 4px; }
+
+/* B: mała miniatura w wierszu */
+.B .pr { padding: 8px 12px 8px 8px; display: flex; align-items: center; gap: 12px; }
+.B .th { flex: none; width: 56px; height: 56px; border-radius: 14px; background: #fff; display: grid; place-items: center; padding: 4px; }
+.B .th { position: relative; overflow: hidden; }
+.B .th img { position: absolute; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); object-fit: contain; }
+.B .pr .t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.B .pr .qty { gap: 8px; justify-content: flex-end; }
+.B .pr .qty button { width: 32px; height: 32px; }
+
+/* C: same ikony */
+.C .pc { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.C .ic { display: flex; align-items: center; justify-content: space-between; }
+.C .ic i { width: 44px; height: 44px; border-radius: 14px; background: var(--sage-light); color: var(--sage-dark); display: grid; place-items: center; }
+.C .ic svg { width: 22px; height: 22px; stroke-width: 1.8; }
+.C .pc .t { display: flex; flex-direction: column; gap: 4px; }
+.C .pc .qty { padding-top: 4px; }
+
+.cheese { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.chip .cheese { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+<div class="board">
+
+<!-- A -->
+<div class="col A">
+  <div class="tag">A</div>
+  <div class="phone">
+    <div class="head"><h1>Lodówka</h1><div class="acts"><i data-lucide="search"></i><i data-lucide="layout-grid"></i><i data-lucide="settings"></i><i data-lucide="plus"></i></div></div>
+    <div class="chips">
+      <div class="chip on"><i><i data-lucide="layout-grid"></i></i>Wszystko</div>
+      <div class="chip"><i><i data-lucide="milk"></i></i>Nabiał</div>
+      <div class="chip"><i><svg class="cheese" viewBox="0 0 24 24"><path d="M4.519 20.008l16.481 -.008v-3.5a2 2 0 1 1 0 -4v-3.5h-16.722"/><path d="M21 9l-9.385 -4.992c-2.512 .12 -4.758 1.42 -6.327 3.425c-1.423 1.82 -2.288 4.221 -2.288 6.854c0 2.117 .56 4.085 1.519 5.721"/><path d="M15 13v.01M8 13v.01M11 16v.01"/></svg></i>Sery</div>
+      <div class="chip"><i><i data-lucide="beef"></i></i>Mięso</div>
+    </div>
+    <ul class="grid">
+      <li class="card pc"><div class="ph"><img src="https://images.openfoodfacts.org/images/products/000/002/098/3093/front_en.6.200.jpg" alt=""><span class="badge red">Jutro</span></div><div class="t"><div class="name">Gouda</div><div class="meta">Pilos · 150 g</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>2</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ph"><img src="https://images.openfoodfacts.org/images/products/000/002/085/8209/front_pl.4.200.jpg" alt=""><span class="badge red">Jutro</span></div><div class="t"><div class="name">Jogurt naturalny 0% tłuszczu</div><div class="meta">Pilos · 400 g</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>4</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ph"><img src="https://images.openfoodfacts.org/images/products/000/002/032/5770/front_pl.4.200.jpg" alt=""><span class="badge">2 dni</span></div><div class="t"><div class="name">Jaja świeże</div><div class="meta">Aktiw · 10 szt.</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>1</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ph"><img src="https://www.lidl.pl/assets/gcp4d30427aa18a404487657b7ea89c069b.png" alt=""><span class="badge">2 dni</span></div><div class="t"><div class="name">Filet z indyka, XXL</div><div class="meta">Rzeźnik</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>1</span><button><i data-lucide="plus"></i></button></div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- B -->
+<div class="col B">
+  <div class="tag">B</div>
+  <div class="phone">
+    <div class="head"><h1>Lodówka</h1><div class="acts"><i data-lucide="search"></i><i data-lucide="layout-grid"></i><i data-lucide="settings"></i><i data-lucide="plus"></i></div></div>
+    <div class="chips">
+      <div class="chip on"><i><i data-lucide="layout-grid"></i></i>Wszystko</div>
+      <div class="chip"><i><i data-lucide="milk"></i></i>Nabiał</div>
+      <div class="chip"><i><svg class="cheese" viewBox="0 0 24 24"><path d="M4.519 20.008l16.481 -.008v-3.5a2 2 0 1 1 0 -4v-3.5h-16.722"/><path d="M21 9l-9.385 -4.992c-2.512 .12 -4.758 1.42 -6.327 3.425c-1.423 1.82 -2.288 4.221 -2.288 6.854c0 2.117 .56 4.085 1.519 5.721"/><path d="M15 13v.01M8 13v.01M11 16v.01"/></svg></i>Sery</div>
+      <div class="chip"><i><i data-lucide="beef"></i></i>Mięso</div>
+    </div>
+    <ul class="rows">
+      <li class="card pr"><span class="th"><img src="https://images.openfoodfacts.org/images/products/000/002/098/3093/front_en.6.200.jpg" alt=""></span><div class="t"><div class="name">Gouda</div><div class="meta">Pilos · 150 g</div><div><span class="badge red">Jutro</span></div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>2</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pr"><span class="th"><img src="https://images.openfoodfacts.org/images/products/000/002/085/8209/front_pl.4.200.jpg" alt=""></span><div class="t"><div class="name">Jogurt naturalny 0% tłuszczu</div><div class="meta">Pilos · 400 g</div><div><span class="badge red">Jutro</span></div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>4</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pr"><span class="th"><img src="https://images.openfoodfacts.org/images/products/000/002/032/5770/front_pl.4.200.jpg" alt=""></span><div class="t"><div class="name">Jaja świeże</div><div class="meta">Aktiw · 10 szt.</div><div><span class="badge">2 dni</span></div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>1</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pr"><span class="th"><img src="https://www.lidl.pl/assets/gcp4d30427aa18a404487657b7ea89c069b.png" alt=""></span><div class="t"><div class="name">Filet z indyka, XXL</div><div class="meta">Rzeźnik</div><div><span class="badge">2 dni</span></div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>1</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pr"><span class="th"><img src="https://images.openfoodfacts.org/images/products/590/051/298/8016/front_pl.6.200.jpg" alt=""></span><div class="t"><div class="name">Mleko spożywcze 3,2%</div><div class="meta">Pilos · 1 l</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>2</span><button><i data-lucide="plus"></i></button></div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- C -->
+<div class="col C">
+  <div class="tag">C</div>
+  <div class="phone">
+    <div class="head"><h1>Lodówka</h1><div class="acts"><i data-lucide="search"></i><i data-lucide="layout-grid"></i><i data-lucide="settings"></i><i data-lucide="plus"></i></div></div>
+    <div class="chips">
+      <div class="chip on"><i><i data-lucide="layout-grid"></i></i>Wszystko</div>
+      <div class="chip"><i><i data-lucide="milk"></i></i>Nabiał</div>
+      <div class="chip"><i><svg class="cheese" viewBox="0 0 24 24"><path d="M4.519 20.008l16.481 -.008v-3.5a2 2 0 1 1 0 -4v-3.5h-16.722"/><path d="M21 9l-9.385 -4.992c-2.512 .12 -4.758 1.42 -6.327 3.425c-1.423 1.82 -2.288 4.221 -2.288 6.854c0 2.117 .56 4.085 1.519 5.721"/><path d="M15 13v.01M8 13v.01M11 16v.01"/></svg></i>Sery</div>
+      <div class="chip"><i><i data-lucide="beef"></i></i>Mięso</div>
+    </div>
+    <ul class="grid">
+      <li class="card pc"><div class="ic"><i><svg class="cheese" viewBox="0 0 24 24"><path d="M4.519 20.008l16.481 -.008v-3.5a2 2 0 1 1 0 -4v-3.5h-16.722"/><path d="M21 9l-9.385 -4.992c-2.512 .12 -4.758 1.42 -6.327 3.425c-1.423 1.82 -2.288 4.221 -2.288 6.854c0 2.117 .56 4.085 1.519 5.721"/><path d="M15 13v.01M8 13v.01M11 16v.01"/></svg></i><span class="badge red">Jutro</span></div><div class="t"><div class="name">Gouda</div><div class="meta">Pilos · 150 g</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>2</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ic"><i><i data-lucide="milk"></i></i><span class="badge red">Jutro</span></div><div class="t"><div class="name">Jogurt naturalny 0% tłuszczu</div><div class="meta">Pilos · 400 g</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>4</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ic"><i><i data-lucide="milk"></i></i><span class="badge">2 dni</span></div><div class="t"><div class="name">Jaja świeże</div><div class="meta">Aktiw · 10 szt.</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>1</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ic"><i><i data-lucide="beef"></i></i><span class="badge">2 dni</span></div><div class="t"><div class="name">Filet z indyka, XXL</div><div class="meta">Rzeźnik</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>1</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ic"><i><i data-lucide="milk"></i></i></div><div class="t"><div class="name">Mleko spożywcze 3,2%</div><div class="meta">Pilos · 1 l</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>2</span><button><i data-lucide="plus"></i></button></div></li>
+      <li class="card pc"><div class="ic"><i><i data-lucide="milk"></i></i></div><div class="t"><div class="name">Masło 83</div><div class="meta">Pilos · 200 g</div></div><div class="qty"><button><i data-lucide="minus"></i></button><span>1</span><button><i data-lucide="plus"></i></button></div></li>
+    </ul>
+  </div>
+</div>
+
+</div>
+<script>lucide.createIcons();</script>
+</body>
+</html>
