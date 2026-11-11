@@ -32,7 +32,7 @@ export function expiryLabel(iso: string): string {
   if (n < 0) return 'Przeterminowane';
   if (n === 0) return 'Dziś';
   if (n === 1) return 'Jutro';
-  return `Za ${n} dni`;
+  return `${n} dni`;
 }
 
 const WEEKDAY_GENITIVE = ['niedzieli', 'poniedziałku', 'wtorku', 'środy', 'czwartku', 'piątku', 'soboty'];
