@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Archive, Receipt, Refrigerator } from 'lucide-react';
+import { Archive, ReceiptText, Refrigerator } from 'lucide-react';
 import type { Place } from '../types';
 import type { Entry } from './StockItems';
 import { ProductImage } from './ui';
@@ -105,7 +105,7 @@ export function BagView({
 
       <div className="bag-actions">
         <button type="button" className="btn wide span2" onClick={onReceipt}>
-          <Receipt size={18} aria-hidden="true" /> Dodaj paragon
+          <ReceiptText size={18} aria-hidden="true" /> Dodaj paragon
         </button>
         <button type="button" className="btn ghost wide span2" disabled={leaving} onClick={unpackAll}>
           Rozpakuj wszystko

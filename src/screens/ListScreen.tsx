@@ -1,11 +1,12 @@
 import { Fragment, useMemo, useState } from 'react';
-import { Barcode, Check, Plus, Receipt, ShoppingBasket, X } from 'lucide-react';
+import { Barcode, Check, Plus, ReceiptText, ShoppingBasket, X } from 'lucide-react';
 import { useStore } from '../store';
 import { CATEGORIES } from '../categories';
 import { buildSuggestions, frequentProducts } from '../insights';
 import { pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
 import { CatalogSearch } from '../components/CatalogSearch';
+import { Collapsible } from '../components/Collapsible';
 import { ReceiptSheet } from '../components/ReceiptSheet';
 import { ProductImage, QtyStepper, useToast } from '../components/ui';
 import type { ListItem, Product } from '../types';
@@ -95,8 +96,8 @@ export function ListScreen() {
       <header className="head">
         <h1>Lista zakupów</h1>
         <div className="head-actions">
-          <button type="button" className="icon-btn" aria-label="Dodaj paragon" onClick={() => setReceiptOpen(true)}>
-            <Receipt size={22} aria-hidden="true" />
+          <button type="button" className="icon-btn accent" aria-label="Dodaj paragon" onClick={() => setReceiptOpen(true)}>
+            <ReceiptText size={24} aria-hidden="true" />
           </button>
         </div>
       </header>
@@ -114,8 +115,7 @@ export function ListScreen() {
 
       <div className="sections">
         {frequent.length > 0 && !query.trim() ? (
-          <section className="section">
-            <h2 className="cat-label">Najczęściej kupujecie</h2>
+          <Collapsible id="frequent" title="Najczęściej kupujecie" count={frequent.length}>
             <ul className="freq-row">
               {frequent.map(({ product, every }) => {
                 const added = onList.has(product.id);
@@ -142,25 +142,27 @@ export function ListScreen() {
                 );
               })}
             </ul>
-          </section>
+          </Collapsible>
         ) : null}
         {suggestions.length > 0 && !query.trim() ? (
-          <section className="section">
-            <div className="section-head">
-              <h2 className="cat-label">Może brakuje?</h2>
-              {suggestions.length > 1 ? (
+          <Collapsible
+            id="missing"
+            title="Może brakuje?"
+            count={suggestions.length}
+            defaultOpen
+            action={suggestions.length > 1 ? (
                 <button
                   type="button"
                   className="link"
                   onClick={() => {
-                    for (const s of suggestions) dispatch({ type: 'listAdd', productId: s.product.id });
+                    for (const x of suggestions) dispatch({ type: 'listAdd', productId: x.product.id });
                     toast('Dodano do listy zakupów');
                   }}
                 >
                   Dodaj wszystkie
                 </button>
               ) : null}
-            </div>
+          >
             <ul className="rows">
               {suggestions.map(({ product, reason }) => (
                 <li key={product.id} className="card row">
@@ -183,7 +185,7 @@ export function ListScreen() {
                 </li>
               ))}
             </ul>
-          </section>
+          </Collapsible>
         ) : null}
 
         <section className="section">
