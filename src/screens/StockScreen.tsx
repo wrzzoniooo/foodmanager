@@ -8,6 +8,7 @@ import { daysUntil, pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
 import { ItemSheet } from '../components/ItemSheet';
 import { PeekOverlay } from '../components/PeekOverlay';
+import { ReceiptSheet } from '../components/ReceiptSheet';
 import { SettingsSheet } from '../components/SettingsSheet';
 import { BagView } from '../components/BagView';
 import { StockList, type Entry } from '../components/StockItems';
@@ -41,6 +42,7 @@ export function StockScreen({ place }: { place: Place }) {
   const [prefs, setPrefs] = useViewPrefs(place);
   const [viewOpen, setViewOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const [peekId, setPeekId] = useState<string | null>(null);
   const [focusDate, setFocusDate] = useState(false);
@@ -303,6 +305,10 @@ export function StockScreen({ place }: { place: Place }) {
           <BagView
             entries={bagEntries}
             preferred={(entry) => preferredPlace(state.habits, entry.p)}
+            onReceipt={() => {
+              setBagOpen(false);
+              setReceiptOpen(true);
+            }}
             onUnpackAll={(overrides) => {
               unpackAll(overrides);
               setBagOpen(false);
@@ -311,6 +317,7 @@ export function StockScreen({ place }: { place: Place }) {
         </Sheet>
       ) : null}
       {adding ? <AddProductSheet place={place} onClose={() => setAdding(false)} /> : null}
+      {receiptOpen ? <ReceiptSheet onClose={() => setReceiptOpen(false)} /> : null}
       {settingsOpen ? <SettingsSheet onClose={() => setSettingsOpen(false)} /> : null}
       {viewOpen ? (
         <ViewSheet prefs={prefs} onChange={setPrefs} onClose={() => setViewOpen(false)} />

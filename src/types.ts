@@ -63,6 +63,10 @@ export interface PurchaseEvent {
   productId: string;
   ts: number;
   qty: number;
+  /** Skąd wiemy o zakupie: z listy ("Zakończ zakupy") albo z paragonu (dokładniejsze, zastępuje wpisy z listy). */
+  source?: 'list' | 'receipt';
+  /** Wyprawa po zakupy: wszystkie wpisy z jednego "Zakończ zakupy" lub jednego paragonu mają ten sam znacznik. */
+  trip?: string;
 }
 
 /** Ile razy produkt trafił do lodówki i do szafek z wyboru użytkownika: z tego aplikacja wie, gdzie go zwykle chowacie. */
@@ -75,6 +79,10 @@ export interface AppState {
   events: UsageEvent[];
   purchases: PurchaseEvent[];
   habits: PlaceHabits;
+  /** Odciski dodanych paragonów (odcisk -> czas), żeby ten sam paragon nie wszedł dwa razy. */
+  receipts: Record<string, number>;
+  /** Nauczone dopasowania: znormalizowany tekst z paragonu -> produkt. */
+  receiptMap: Record<string, string>;
   /** productId -> czas odrzucenia sugestii */
   dismissed: Record<string, number>;
 }

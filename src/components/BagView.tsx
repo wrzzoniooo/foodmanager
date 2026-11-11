@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Archive, Refrigerator } from 'lucide-react';
+import { Archive, Receipt, Refrigerator } from 'lucide-react';
 import type { Place } from '../types';
 import type { Entry } from './StockItems';
 import { ProductImage } from './ui';
@@ -19,12 +19,15 @@ export function BagView({
   entries,
   preferred,
   onUnpackAll,
+  onReceipt,
 }: {
   entries: Entry[];
   /** Gdzie aplikacja uważa, że produkt zwykle trafia. */
   preferred: (entry: Entry) => Place;
   /** Rozpakowanie wszystkiego; w overrides są tylko produkty, którym zmieniono miejsce. */
   onUnpackAll: (overrides: Record<string, Place>) => void;
+  /** Dodanie paragonu: uzgodnienie siatek z tym, co faktycznie kupiono. */
+  onReceipt: () => void;
 }) {
   const [overrides, setOverrides] = useState<Record<string, Place>>({});
   const [leaving, setLeaving] = useState(false);
@@ -101,7 +104,10 @@ export function BagView({
       </div>
 
       <div className="bag-actions">
-        <button type="button" className="btn wide span2" disabled={leaving} onClick={unpackAll}>
+        <button type="button" className="btn wide span2" onClick={onReceipt}>
+          <Receipt size={18} aria-hidden="true" /> Dodaj paragon
+        </button>
+        <button type="button" className="btn ghost wide span2" disabled={leaving} onClick={unpackAll}>
           Rozpakuj wszystko
         </button>
       </div>

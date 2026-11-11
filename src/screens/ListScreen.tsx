@@ -1,11 +1,12 @@
 import { Fragment, useMemo, useState } from 'react';
-import { Barcode, Check, Plus, ShoppingBasket, X } from 'lucide-react';
+import { Barcode, Check, Plus, Receipt, ShoppingBasket, X } from 'lucide-react';
 import { useStore } from '../store';
 import { CATEGORIES } from '../categories';
-import { buildSuggestions } from '../insights';
+import { buildSuggestions, frequentProducts } from '../insights';
 import { pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
 import { CatalogSearch } from '../components/CatalogSearch';
+import { ReceiptSheet } from '../components/ReceiptSheet';
 import { ProductImage, QtyStepper, useToast } from '../components/ui';
 import type { ListItem, Product } from '../types';
 
@@ -24,8 +25,11 @@ export function ListScreen() {
   const [query, setQuery] = useState('');
   const [draft, setDraft] = useState('');
   const [sheet, setSheet] = useState<'menu' | 'scan' | null>(null);
+  const [receiptOpen, setReceiptOpen] = useState(false);
 
   const suggestions = useMemo(() => buildSuggestions(state), [state]);
+  const frequent = useMemo(() => frequentProducts(state), [state]);
+  const onList = new Set(state.list.map((x) => x.productId));
   const entries: Entry[] = state.list.flatMap((l) => {
     const p = productById(l.productId);
     return p ? [{ l, p }] : [];
@@ -90,6 +94,11 @@ export function ListScreen() {
     <section className="screen" aria-label="Lista zakupów">
       <header className="head">
         <h1>Lista zakupów</h1>
+        <div className="head-actions">
+          <button type="button" className="icon-btn" aria-label="Dodaj paragon" onClick={() => setReceiptOpen(true)}>
+            <Receipt size={22} aria-hidden="true" />
+          </button>
+        </div>
       </header>
 
       <CatalogSearch
@@ -104,6 +113,37 @@ export function ListScreen() {
       />
 
       <div className="sections">
+        {frequent.length > 0 && !query.trim() ? (
+          <section className="section">
+            <h2 className="cat-label">Najczęściej kupujecie</h2>
+            <ul className="freq-row">
+              {frequent.map(({ product, every }) => {
+                const added = onList.has(product.id);
+                return (
+                  <li key={product.id}>
+                    <button
+                      type="button"
+                      className={added ? 'freq added' : 'freq'}
+                      disabled={added}
+                      aria-label={`Dodaj do listy: ${product.name}`}
+                      onClick={() => {
+                        dispatch({ type: 'listAdd', productId: product.id });
+                        toast(`${product.name} na liście`);
+                      }}
+                    >
+                      <ProductImage product={product} size={44} />
+                      <span className="freq-name">{product.name}</span>
+                      <span className="freq-every">
+                        co {every} {pluralPl(every, 'dzień', 'dni', 'dni')}
+                      </span>
+                      <span className="freq-plus">{added ? <Check size={14} aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ) : null}
         {suggestions.length > 0 && !query.trim() ? (
           <section className="section">
             <div className="section-head">
@@ -214,6 +254,7 @@ export function ListScreen() {
         </div>
       ) : null}
 
+      {receiptOpen ? <ReceiptSheet onClose={() => setReceiptOpen(false)} /> : null}
       {sheet ? <AddProductSheet place="pantry" forList initialMode={sheet} onClose={() => setSheet(null)} /> : null}
     </section>
   );

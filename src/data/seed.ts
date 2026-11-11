@@ -123,5 +123,5 @@ const PURCHASES: PurchaseEvent[] = [
 ];
 
 export function createSeed(): AppState {
-  return { products: PRODUCTS, stock: STOCK, list: LIST, events: EVENTS, purchases: PURCHASES, habits: {}, dismissed: {} };
+  return { products: PRODUCTS, stock: STOCK, list: LIST, events: EVENTS, purchases: PURCHASES, habits: {}, receipts: {}, receiptMap: {}, dismissed: {} };
 }

@@ -4,7 +4,7 @@ import type { AppState, ListItem, Product, PurchaseEvent, StockItem, UsageEvent 
  * Synchronizacja działa na "wierszach": każda rzecz w stanie (zapas, pozycja listy, zdarzenie, produkt...)
  * to wiersz z rodzajem i identyfikatorem. Telefon wysyła tylko to, co się zmieniło od ostatniej synchronizacji.
  */
-export type Kind = 'product' | 'stock' | 'list' | 'event' | 'purchase' | 'habit' | 'dismissed';
+export type Kind = 'product' | 'stock' | 'list' | 'event' | 'purchase' | 'habit' | 'dismissed' | 'receipt' | 'rmap';
 
 export interface Row {
   kind: Kind;
@@ -47,7 +47,7 @@ export function hash(s: string): string {
 }
 
 export const eventId = (e: UsageEvent) => `${e.ts}-${e.productId}-${e.delta}-${e.kind ?? ''}`;
-export const purchaseId = (p: PurchaseEvent) => `${p.ts}-${p.productId}-${p.qty}`;
+export const purchaseId = (p: PurchaseEvent) => `${p.ts}-${p.productId}-${p.qty}-${p.source ?? 'list'}`;
 
 /** Produkty z katalogu są w aplikacji na każdym telefonie, więc ich nie wysyłamy. */
 const synced = (p: Product) => !p.catalog && !p.id.startsWith('lidl-');
@@ -62,6 +62,8 @@ export function collect(state: AppState): Map<string, Entity> {
   for (const p of state.purchases) put('purchase', purchaseId(p), p);
   for (const [id, h] of Object.entries(state.habits)) put('habit', id, h);
   for (const [id, ts] of Object.entries(state.dismissed)) put('dismissed', id, { ts });
+  for (const [id, ts] of Object.entries(state.receipts)) put('receipt', id, { ts });
+  for (const [id, productId] of Object.entries(state.receiptMap)) put('rmap', id, { productId });
   return out;
 }
 
@@ -122,6 +124,16 @@ export function applyRows(state: AppState, rows: Row[]): AppState {
     if (r.deleted) delete dismissed[r.id];
     else dismissed[r.id] = (r.data as { ts: number }).ts;
   }
+  const receipts = { ...state.receipts };
+  for (const r of of('receipt')) {
+    if (r.deleted) delete receipts[r.id];
+    else receipts[r.id] = (r.data as { ts: number }).ts;
+  }
+  const receiptMap = { ...state.receiptMap };
+  for (const r of of('rmap')) {
+    if (r.deleted) delete receiptMap[r.id];
+    else receiptMap[r.id] = (r.data as { productId: string }).productId;
+  }
   return {
     ...state,
     products: merge<Product>(state.products, (p) => p.id, of('product')),
@@ -131,5 +143,7 @@ export function applyRows(state: AppState, rows: Row[]): AppState {
     purchases: merge<PurchaseEvent>(state.purchases, purchaseId, of('purchase')),
     habits,
     dismissed,
+    receipts,
+    receiptMap,
   };
 }

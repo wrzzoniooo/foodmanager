@@ -3,6 +3,7 @@ import type { AppState, Place, Product, StockItem } from './types';
 import { createSeed } from './data/seed';
 import { preferredPlace, recordPlace } from './habits';
 import { applyRows, type Row } from './sync/rows';
+import { applyReceipt, type ReceiptItem } from './receipt/reconcile';
 
 const STORAGE_KEY = 'spizarnia.v1';
 
@@ -24,6 +25,14 @@ type Action =
   | { type: 'catalogMerge'; products: Product[] }
   | { type: 'productAdd'; product: Product }
   | { type: 'remoteApply'; rows: Row[] }
+  | {
+      type: 'receiptApply';
+      items: ReceiptItem[];
+      removeMissing: Record<string, boolean>;
+      fingerprint: string;
+      learned: Record<string, string>;
+    }
+  | { type: 'replaceState'; state: AppState }
   | { type: 'syncReset' }
   | { type: 'clearAll' }
   | { type: 'reset' };
@@ -160,7 +169,7 @@ function reducer(state: AppState, action: Action): AppState {
       const purchases = [...state.purchases];
       for (const l of state.list.filter((x) => x.done)) {
         stock = mergeInto(stock, { id: newId('b'), productId: l.productId, location: 'bags', qty: l.qty });
-        purchases.push({ productId: l.productId, ts: now, qty: l.qty });
+        purchases.push({ productId: l.productId, ts: now, qty: l.qty, source: 'list', trip: String(now) });
       }
       return { ...state, stock, purchases, list: state.list.filter((l) => !l.done) };
     }
@@ -178,6 +187,10 @@ function reducer(state: AppState, action: Action): AppState {
       return state.products.some((p) => p.id === action.product.id)
         ? state
         : { ...state, products: [...state.products, action.product] };
+    case 'receiptApply':
+      return applyReceipt(state, action.items, action.removeMissing, action.fingerprint, action.learned, () => newId('b')).state;
+    case 'replaceState':
+      return action.state;
     case 'remoteApply':
       return applyRows(state, action.rows);
     case 'syncReset':
@@ -189,12 +202,14 @@ function reducer(state: AppState, action: Action): AppState {
         events: [],
         purchases: [],
         habits: {},
+        receipts: {},
+        receiptMap: {},
         dismissed: {},
       };
     case 'clearAll': {
       // Czyści dane demo: zostają tylko produkty z katalogu Lidla.
       const products = state.products.filter(isRealProduct);
-      return { products, stock: [], list: [], events: [], purchases: [], habits: {}, dismissed: {} };
+      return { products, stock: [], list: [], events: [], purchases: [], habits: {}, receipts: {}, receiptMap: {}, dismissed: {} };
     }
     case 'reset': {
       const seed = createSeed();
@@ -214,7 +229,7 @@ function load(): AppState {
         Array.isArray(parsed.list) &&
         Array.isArray(parsed.events)
       ) {
-        return { dismissed: {}, purchases: [], habits: {}, ...parsed } as AppState;
+        return { dismissed: {}, purchases: [], habits: {}, receipts: {}, receiptMap: {}, ...parsed } as AppState;
       }
     }
   } catch {

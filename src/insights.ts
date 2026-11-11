@@ -93,3 +93,23 @@ export function buildSuggestions(state: AppState, limit = 5): Suggestion[] {
   }
   return out.sort((a, b) => a.urgency - b.urgency).slice(0, limit).map((x) => x.s);
 }
+
+export interface Frequent {
+  product: Product;
+  /** Typowy odstęp między zakupami w dniach. */
+  every: number;
+  count: number;
+}
+
+/** Produkty, które kupujecie najczęściej (co najmniej 3 razy w ostatnich 120 dniach), z typowym rytmem zakupów. */
+export function frequentProducts(state: AppState, limit = 8): Frequent[] {
+  const byId = new Map(state.products.map((p) => [p.id, p]));
+  const out: Frequent[] = [];
+  for (const productId of new Set(state.purchases.map((p) => p.productId))) {
+    const product = byId.get(productId);
+    if (!product) continue;
+    const c = purchaseCadence(state, productId);
+    if (c.count >= FREQUENT_PURCHASES && c.interval > 0) out.push({ product, every: c.interval, count: c.count });
+  }
+  return out.sort((a, b) => b.count - a.count || a.every - b.every).slice(0, limit);
+}

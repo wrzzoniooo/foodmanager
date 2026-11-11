@@ -1758,3 +1758,202 @@ button:disabled {
 .meta.version {
   text-align: center;
 }
+
+/* ----- paragon: przegląd pozycji i uzgodnienie z siatką ----- */
+.receipt-raw {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-label);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.receipt-reading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4) 0;
+}
+.receipt-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.receipt-meter-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.receipt-meter-top .name {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+.receipt-bar {
+  display: flex;
+  gap: var(--s1);
+  height: 8px;
+}
+.receipt-bar i {
+  display: block;
+  border-radius: 4px;
+}
+.receipt-bar .g {
+  background: var(--ok);
+}
+.receipt-bar .a {
+  background: var(--fresh-amber);
+}
+.receipt-bar .n {
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
+}
+.receipt-list.paper {
+  padding: var(--s1) var(--s3);
+}
+.receipt-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+.receipt-photo {
+  position: relative;
+  flex: none;
+}
+.receipt-blank {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.receipt-st {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 18px;
+  height: 18px;
+  box-sizing: content-box;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.receipt-st.ok {
+  background: var(--ok);
+}
+.receipt-st.wn {
+  background: var(--fresh-amber);
+}
+.receipt-st.no {
+  background: var(--muted);
+}
+.receipt-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.receipt-chip {
+  flex: none;
+  padding: 2px var(--s3);
+  border-radius: 99px;
+  background: var(--sage-chip);
+  color: var(--ink-sage);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.receipt-chip.nw {
+  background: var(--badge-green-bg);
+  color: var(--badge-green-ink);
+}
+.receipt-chip.up {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+.receipt-chip.act {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+.receipt-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--s2);
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  font-size: var(--fs-label);
+}
+.seg.small {
+  flex: none;
+}
+.seg.small button {
+  min-height: 32px;
+  padding: var(--s1) var(--s3);
+  font-size: var(--fs-meta);
+}
+
+/* ----- lista: najczęściej kupowane ----- */
+.freq-row {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  padding-bottom: var(--s1);
+  scrollbar-width: none;
+}
+.freq-row li {
+  display: flex;
+}
+.freq-row::-webkit-scrollbar {
+  display: none;
+}
+.freq {
+  position: relative;
+  flex: none;
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s2) var(--s2) var(--s3);
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+}
+.freq {
+  height: 100%;
+}
+.freq.added {
+  opacity: 0.5;
+}
+.freq-name {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
+.freq-every {
+  font-size: var(--fs-micro);
+  color: var(--muted);
+}
+.freq-plus {
+  margin-top: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--on-sage);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
