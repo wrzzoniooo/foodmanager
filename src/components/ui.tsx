@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { ArrowLeft, Minus, Plus, Refrigerator, Archive, ListChecks, BadgePercent, X, Search, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, Minus, Plus, Refrigerator, Archive, ListChecks, X, Search, type LucideIcon } from 'lucide-react';
 import { CATEGORY_BY_ID } from '../categories';
 import type { Product } from '../types';
 
@@ -142,13 +142,12 @@ export function IconChips<T extends string>({
 
 /* ---------- Dolna nawigacja ---------- */
 
-export type Tab = 'fridge' | 'pantry' | 'list' | 'promo';
+export type Tab = 'fridge' | 'pantry' | 'list';
 
 const TABS: { id: Tab; label: string; Icon: typeof Refrigerator }[] = [
   { id: 'fridge', label: 'Lodówka', Icon: Refrigerator },
   { id: 'pantry', label: 'Szafki', Icon: Archive },
   { id: 'list', label: 'Lista', Icon: ListChecks },
-  { id: 'promo', label: 'Promocje', Icon: BadgePercent },
 ];
 
 /** Stan zakładki Lista: ile pozycji na liście, ile już w koszyku i czy są sugestie braków. */

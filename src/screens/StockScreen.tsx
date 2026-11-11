@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LayoutGrid, Plus, Search, ShoppingBag, ShoppingBasket, X, type LucideIcon } from 'lucide-react';
 import { useStore } from '../store';
-import { useCatalog } from '../catalog';
 import { CATEGORIES } from '../categories';
 import { preferredPlace } from '../habits';
-import { buildPromos, buildSuggestions } from '../insights';
+import { buildSuggestions } from '../insights';
 import { daysUntil, pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
 import { ItemSheet } from '../components/ItemSheet';
@@ -31,7 +30,6 @@ const PLACE_LABEL: Record<Place, { title: string; added: string; genitive: strin
 export function StockScreen({ place }: { place: Place }) {
   const { state, dispatch, productById } = useStore();
   const toast = useToast();
-  const { promos } = useCatalog();
   const isFridge = place === 'fridge';
 
   const [cat, setCat] = useState<CategoryId | 'all'>('all');
@@ -44,12 +42,6 @@ export function StockScreen({ place }: { place: Place }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [peekId, setPeekId] = useState<string | null>(null);
   const [focusDate, setFocusDate] = useState(false);
-
-  const promoByProduct = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const v of buildPromos(state.products, promos)) if (v.active && v.percent) map.set(v.product.id, v.percent);
-    return map;
-  }, [state.products, promos]);
 
   const toEntries = (items: StockItem[]): Entry[] =>
     items.flatMap((s) => {
@@ -255,7 +247,6 @@ export function StockScreen({ place }: { place: Place }) {
               key={`${prefs.layout}-${prefs.order}`}
               layout={prefs.layout}
               entries={byExpiry}
-              promos={promoByProduct}
               onOpen={(id) => {
                 setFocusDate(false);
                 setOpenId(id);
@@ -273,7 +264,6 @@ export function StockScreen({ place }: { place: Place }) {
                     key={prefs.layout}
                     layout={prefs.layout}
                     entries={g.entries}
-                    promos={promoByProduct}
                     onOpen={(id) => {
                       setFocusDate(false);
                       setOpenId(id);

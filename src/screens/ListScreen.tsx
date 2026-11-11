@@ -1,9 +1,8 @@
 import { Fragment, useMemo, useState } from 'react';
 import { Barcode, Check, Plus, ShoppingBasket, X } from 'lucide-react';
 import { useStore } from '../store';
-import { useCatalog } from '../catalog';
 import { CATEGORIES } from '../categories';
-import { buildPromos, buildSuggestions } from '../insights';
+import { buildSuggestions } from '../insights';
 import { pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
 import { CatalogSearch } from '../components/CatalogSearch';
@@ -22,18 +21,11 @@ function capitalize(text: string): string {
 export function ListScreen() {
   const { state, dispatch, productById } = useStore();
   const toast = useToast();
-  const { promos } = useCatalog();
   const [query, setQuery] = useState('');
   const [draft, setDraft] = useState('');
   const [sheet, setSheet] = useState<'menu' | 'scan' | null>(null);
 
   const suggestions = useMemo(() => buildSuggestions(state), [state]);
-  const promoByProduct = useMemo(() => {
-    const map = new Map<string, number>();
-    for (const v of buildPromos(state.products, promos)) if (v.active && v.percent) map.set(v.product.id, v.percent);
-    return map;
-  }, [state.products, promos]);
-
   const entries: Entry[] = state.list.flatMap((l) => {
     const p = productById(l.productId);
     return p ? [{ l, p }] : [];
@@ -85,7 +77,6 @@ export function ListScreen() {
       <div className="grow">
         <div className="name">{e.p.name}</div>
         <div className="meta">
-          {promoByProduct.has(e.p.id) ? <span className="tag red">-{promoByProduct.get(e.p.id)}% dziś</span> : null}{' '}
           {[e.p.brand, e.p.size].filter(Boolean).join(' · ')}
         </div>
       </div>

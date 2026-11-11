@@ -41,7 +41,6 @@ export function Freshness({ expires }: { expires?: string }) {
 interface Props {
   layout: Layout;
   entries: Entry[];
-  promos: Map<string, number>;
   onOpen: (stockId: string) => void;
   /** Przytrzymanie produktu: szybki podgląd z akcjami. */
   onPeek: (stockId: string) => void;
@@ -213,12 +212,11 @@ function SwipeRow({
   );
 }
 
-export function StockList({ layout, entries, promos, onOpen, onPeek, onSwipe, onAdjust }: Props) {
+export function StockList({ layout, entries, onOpen, onPeek, onSwipe, onAdjust }: Props) {
   const listClass = layout === 'cards' ? 'pgrid2' : layout === 'rows' ? 'rows' : 'pgrid3';
   return (
     <ul className={listClass}>
       {entries.map((e, i) => {
-        const promo = promos.get(e.p.id);
         const style = { '--i': Math.min(i, 12) } as CSSProperties;
         const stepper = <QtyStepper qty={e.s.qty} name={e.p.name} onChange={(delta) => onAdjust(e, delta)} />;
 
@@ -235,7 +233,6 @@ export function StockList({ layout, entries, promos, onOpen, onPeek, onSwipe, on
                 <span className="pcard-photo">
                   <ProductImage product={e.p} fluid={88} />
                   <ExpiryBadge expires={e.s.expires} />
-                  {promo ? <span className="tile-badge">-{promo}%</span> : null}
                 </span>
                 <span className="name">{e.p.name}</span>
                 <span className="meta">{meta(e.p)}</span>
@@ -254,7 +251,7 @@ export function StockList({ layout, entries, promos, onOpen, onPeek, onSwipe, on
                 <span className="prow-text">
                   <span className="name">{e.p.name}</span>
                   <span className="meta">
-                    {meta(e.p)} {promo ? <span className="tag red">-{promo}%</span> : null}
+                    {meta(e.p)}
                   </span>
                   {e.s.expires ? (
                     <span className="prow-fresh">
@@ -278,7 +275,6 @@ export function StockList({ layout, entries, promos, onOpen, onPeek, onSwipe, on
                 <span className="pcell-qty" aria-label={`Ilość: ${e.s.qty}`}>
                   {e.s.qty}
                 </span>
-                {promo ? <span className="tag red pcell-promo">-{promo}%</span> : null}
               </span>
               <span className="pcell-name">{e.p.name}</span>
               {meta(e.p) ? <span className="pcell-meta">{meta(e.p)}</span> : null}

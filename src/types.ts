@@ -62,15 +62,6 @@ export interface PurchaseEvent {
   qty: number;
 }
 
-/** Promocja z oferty Lidla. Daty ISO (RRRR-MM-DD), włącznie. */
-export interface Promo {
-  productId: string;
-  priceNow: number;
-  priceOld?: number;
-  from: string;
-  to: string;
-}
-
 /** Ile razy produkt trafił do lodówki i do szafek z wyboru użytkownika: z tego aplikacja wie, gdzie go zwykle chowacie. */
 export type PlaceHabits = Record<string, { fridge: number; pantry: number }>;
 

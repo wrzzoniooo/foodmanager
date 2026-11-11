@@ -1,5 +1,5 @@
-import type { AppState, Product, Promo } from './types';
-import { daysUntil, formatPrice, pluralPl, weekdayGenitive } from './dates';
+import type { AppState, Product } from './types';
+import { pluralPl } from './dates';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WINDOW_DAYS = 30;
@@ -47,11 +47,6 @@ function purchaseCadence(state: AppState, productId: string): { count: number; i
   return { count: days.length, interval: Math.max(1, Math.round(interval)), sinceLast };
 }
 
-/** Produkty, które często kupujecie albo zużywacie. */
-export function isFrequent(state: AppState, productId: string): boolean {
-  return usageRate(state, productId).count >= 3 || purchaseCadence(state, productId).count >= FREQUENT_PURCHASES;
-}
-
 const days = (n: number) => `${n} ${pluralPl(n, 'dzień', 'dni', 'dni')}`;
 
 /**
@@ -97,44 +92,4 @@ export function buildSuggestions(state: AppState, limit = 5): Suggestion[] {
     }
   }
   return out.sort((a, b) => a.urgency - b.urgency).slice(0, limit).map((x) => x.s);
-}
-
-export interface PromoView {
-  promo: Promo;
-  product: Product;
-  /** Procent obniżki; brak, gdy oferta nie podaje ceny przed obniżką */
-  percent?: number;
-  active: boolean;
-  /** Etykieta ważności, np. "do soboty" albo "od poniedziałku" */
-  validity: string;
-  priceNowLabel: string;
-  priceOldLabel?: string;
-}
-
-/** Bieżące i nadchodzące promocje dopasowane do produktów katalogu (daty z oferty Lidla). */
-export function buildPromos(products: Product[], promos: Promo[]): PromoView[] {
-  const byId = new Map(products.map((p) => [p.id, p]));
-  const views: PromoView[] = [];
-  for (const promo of promos) {
-    const product = byId.get(promo.productId);
-    if (!product) continue;
-    const fromIn = daysUntil(promo.from);
-    const toIn = daysUntil(promo.to);
-    if (toIn < 0) continue;
-    const active = fromIn <= 0;
-    let validity: string;
-    if (!active) validity = `od ${weekdayGenitive(fromIn)}`;
-    else if (toIn === 0) validity = 'tylko dziś';
-    else validity = `do ${weekdayGenitive(toIn)}`;
-    views.push({
-      promo,
-      product,
-      percent: promo.priceOld ? Math.round((1 - promo.priceNow / promo.priceOld) * 100) : undefined,
-      active,
-      validity,
-      priceNowLabel: formatPrice(promo.priceNow),
-      priceOldLabel: promo.priceOld ? formatPrice(promo.priceOld) : undefined,
-    });
-  }
-  return views.sort((a, b) => (b.percent ?? 0) - (a.percent ?? 0));
 }

@@ -263,55 +263,6 @@ button:disabled {
 }
 
 /* ----- kafelki ----- */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.tile {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--s1);
-  padding: var(--s3);
-}
-.tile .thumb {
-  margin-bottom: var(--s1);
-}
-.tile .qty,
-.tile .btn {
-  margin-top: auto;
-}
-.tile-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1;
-  background: var(--red);
-  color: var(--on-red);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 99px;
-}
-.price-line {
-  display: flex;
-  gap: var(--s2);
-  align-items: baseline;
-  justify-content: center;
-}
-.price-old {
-  font-size: var(--fs-label);
-  color: var(--muted);
-  text-decoration: line-through;
-}
-.price-now {
-  font-size: var(--fs-lead-l);
-  font-weight: 600;
-  color: var(--red);
-}
 
 /* ----- ilość ----- */
 .qty {
@@ -849,10 +800,6 @@ button:disabled {
   top: var(--s2);
   left: var(--s2);
 }
-.pcard-photo .tile-badge {
-  top: var(--s2);
-  right: var(--s2);
-}
 .pcard .card-hit .name,
 .pcard .card-hit .meta,
 .pcard .fresh {
@@ -938,11 +885,6 @@ button:disabled {
   position: absolute;
   top: var(--s1);
   left: var(--s1);
-}
-.pcell-promo {
-  position: absolute;
-  left: var(--s1);
-  bottom: var(--s1);
 }
 .pcell-meta {
   font-size: var(--fs-label);

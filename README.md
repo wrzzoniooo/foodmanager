@@ -1,6 +1,6 @@
 # Spiżarnia
 
-Wspólna aplikacja (PWA) do zarządzania produktami w domu: lodówka, szafki, siatki z zakupów, lista zakupów z sugestiami i promocje Lidla.
+Wspólna aplikacja (PWA) do zarządzania produktami w domu: lodówka, szafki, siatki z zakupów i lista zakupów z sugestiami.
 
 ## Etap 1 (obecny): szkielet z danymi przykładowymi
 
@@ -9,9 +9,12 @@ Działa bez backendu. Dane trzymane są lokalnie w przeglądarce (`localStorage`
 - **Lodówka / Szafki:** kategorie, zmiana ilości, kolor terminu ważności, dodawanie z katalogu.
 - **Siatki:** produkty z zakupów czekają na rozpakowanie (do lodówki lub szafki).
 - **Lista zakupów:** wyszukiwarka katalogu, odhaczanie, "Zakończ zakupy" przenosi do siatek, sekcja "Może brakuje?" z sugestiami na bazie zużycia (z powodem przy każdej).
-- **Promocje:** Dziś / Wkrótce / Z mojej listy, dopasowane do Waszej listy i często kupowanych produktów.
 
-## Etap 2: dane z Lidla
+## Katalog produktów (wczytywany raz)
+
+Katalog produktów jest plikiem `public/data/lidl.json`, wczytywanym raz razem z aplikacją. Braki dodajecie sami: skanerem kodu kreskowego (Open Food Facts) albo jako własny produkt. Zakładki Promocje nie ma, bo wymagała codziennego odświeżania danych.
+
+## Etap 2: dane z Lidla (importer jednorazowy)
 
 `npm run import` pobiera publiczne strony ofert spożywczych lidl.pl (zgodnie z `robots.txt`, kilka zapytań, uczciwy User-Agent) i zapisuje `public/data/lidl.json`: katalog produktów (nazwa, marka, kategoria, oryginalne zdjęcie z Lidla) i bieżące promocje (cena, cena przed obniżką, daty ważności). Katalog narasta z każdym uruchomieniem, promocje są zawsze z bieżącej oferty. Aplikacja wczytuje ten plik i trzyma kopię w telefonie na wypadek braku sieci.
 
