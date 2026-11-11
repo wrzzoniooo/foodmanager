@@ -2020,8 +2020,3 @@ button:disabled {
     transition: grid-template-rows 0.25s ease;
   }
 }
-
-/* ikona akcji (np. paragon) w kolorze głównym */
-.icon-btn.accent {
-  color: var(--sage);
-}

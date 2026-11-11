@@ -1,5 +1,5 @@
 import { Fragment, useMemo, useState } from 'react';
-import { Barcode, Check, Plus, ReceiptText, ShoppingBasket, X } from 'lucide-react';
+import { Barcode, Check, Plus, Receipt, Settings, ShoppingBasket, X } from 'lucide-react';
 import { useStore } from '../store';
 import { CATEGORIES } from '../categories';
 import { buildSuggestions, frequentProducts } from '../insights';
@@ -8,6 +8,7 @@ import { AddProductSheet } from '../components/AddProductSheet';
 import { CatalogSearch } from '../components/CatalogSearch';
 import { Collapsible } from '../components/Collapsible';
 import { ReceiptSheet } from '../components/ReceiptSheet';
+import { SettingsSheet } from '../components/SettingsSheet';
 import { ProductImage, QtyStepper, useToast } from '../components/ui';
 import type { ListItem, Product } from '../types';
 
@@ -27,6 +28,7 @@ export function ListScreen() {
   const [draft, setDraft] = useState('');
   const [sheet, setSheet] = useState<'menu' | 'scan' | null>(null);
   const [receiptOpen, setReceiptOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const suggestions = useMemo(() => buildSuggestions(state), [state]);
   const frequent = useMemo(() => frequentProducts(state), [state]);
@@ -96,8 +98,11 @@ export function ListScreen() {
       <header className="head">
         <h1>Lista zakupów</h1>
         <div className="head-actions">
-          <button type="button" className="icon-btn accent" aria-label="Dodaj paragon" onClick={() => setReceiptOpen(true)}>
-            <ReceiptText size={24} aria-hidden="true" />
+          <button type="button" className="icon-btn" aria-label="Dodaj paragon" onClick={() => setReceiptOpen(true)}>
+            <Receipt size={22} aria-hidden="true" />
+          </button>
+          <button type="button" className="icon-btn" aria-label="Ustawienia" onClick={() => setSettingsOpen(true)}>
+            <Settings size={22} aria-hidden="true" />
           </button>
         </div>
       </header>
@@ -257,6 +262,7 @@ export function ListScreen() {
       ) : null}
 
       {receiptOpen ? <ReceiptSheet onClose={() => setReceiptOpen(false)} /> : null}
+      {settingsOpen ? <SettingsSheet onClose={() => setSettingsOpen(false)} /> : null}
       {sheet ? <AddProductSheet place="pantry" forList initialMode={sheet} onClose={() => setSheet(null)} /> : null}
     </section>
   );
