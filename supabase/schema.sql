@@ -1,4 +1,4 @@
--- Spiżarnia: wspólna baza dla dwóch telefonów, bez kont. Wklej w Supabase: SQL Editor, New query, Run.
+-- Shelfie: wspólna baza dla dwóch telefonów, bez kont. Wklej w Supabase: SQL Editor, New query, Run.
 -- Dostęp jest tylko przez dwie funkcje i długi klucz gospodarstwa (z kodu QR). Sama tabela jest dla aplikacji zablokowana.
 
 create extension if not exists pgcrypto with schema extensions;

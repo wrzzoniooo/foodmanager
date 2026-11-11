@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 
 const OUT = fileURLToPath(new URL('../public/data/lidl.json', import.meta.url));
-const UA = 'SpizarniaBot/0.2 (prywatna aplikacja domowa, kilka zapytan dziennie)';
+const UA = 'ShelfieBot/0.2 (prywatna aplikacja domowa, kilka zapytan dziennie)';
 const PAGES = [
   'https://www.lidl.pl/c/zywnosc-i-napoje/s10068374',
   'https://www.lidl.pl/h/owoce-i-warzywa/h10071012',

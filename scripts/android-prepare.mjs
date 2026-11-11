@@ -1,4 +1,4 @@
-// Dopasowuje świeżo wygenerowany projekt Android (npx cap add android) do aplikacji Spiżarnia:
+// Dopasowuje świeżo wygenerowany projekt Android (npx cap add android) do aplikacji Shelfie:
 // uprawnienia aparatu i wibracji, ikona i kolor ekranu startowego, numer wersji.
 // Uruchamiane przez .github/workflows/apk.yml; lokalnie: node scripts/android-prepare.mjs
 import { readFile, writeFile, mkdir } from 'node:fs/promises';

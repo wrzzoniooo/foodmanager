@@ -1,4 +1,4 @@
-# Spiżarnia
+# Shelfie
 
 Wspólna aplikacja (PWA) do zarządzania produktami w domu: lodówka, szafki, siatki z zakupów i lista zakupów z sugestiami.
 
@@ -24,7 +24,7 @@ Katalog produktów jest plikiem `public/data/lidl.json`, wczytywanym raz razem z
 
 ## Aplikacja Android (APK)
 
-Plik APK buduje GitHub (`.github/workflows/apk.yml`, Capacitor): po wypchnięciu znacznika wersji (`git tag v1.0.0 && git push origin v1.0.0`) w zakładce Releases pojawia się `Spizarnia.apk`. APK jest podpisany kluczem debug, więc kolejna wersja instaluje się po odinstalowaniu poprzedniej (dane ze wspólnej bazy wracają po połączeniu telefonów).
+Plik APK buduje GitHub (`.github/workflows/apk.yml`, Capacitor): po wypchnięciu znacznika wersji (`git tag v1.1.0 && git push origin v1.1.0`) w zakładce Releases pojawia się `Shelfie.apk`. APK jest podpisany kluczem debug, więc kolejna wersja instaluje się po odinstalowaniu poprzedniej (dane ze wspólnej bazy wracają po połączeniu telefonów).
 
 ## Uruchomienie
 

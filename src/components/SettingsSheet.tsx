@@ -236,7 +236,7 @@ export function SettingsSheet({ onClose }: { onClose: () => void }) {
             </section>
           ) : null}
         </div>
-        <div className="meta version">Spiżarnia {__APP_VERSION__}</div>
+        <div className="meta version">Shelfie {__APP_VERSION__}</div>
       </div>
     </Sheet>
   );

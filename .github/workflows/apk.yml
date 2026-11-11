@@ -1,7 +1,7 @@
 name: Aplikacja Android (APK)
 
 # Uruchamia się po wypchnięciu znacznika wersji, np. v1.0.0 (git tag v1.0.0 && git push origin v1.0.0),
-# albo ręcznie z zakładki Actions. Wynik: plik Spizarnia.apk w wydaniu (Releases) i jako artefakt przebiegu.
+# albo ręcznie z zakładki Actions. Wynik: plik Shelfie.apk w wydaniu (Releases) i jako artefakt przebiegu.
 on:
   push:
     tags: ['v*']
@@ -37,15 +37,15 @@ jobs:
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
       - name: Nazwij plik
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk Spizarnia.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Shelfie.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: Spizarnia-apk
-          path: Spizarnia.apk
+          name: Shelfie-apk
+          path: Shelfie.apk
       - name: Opublikuj w wydaniu
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: Spizarnia.apk
-          name: Spiżarnia ${{ github.ref_name }}
-          body: Aplikacja na Androida. Pobierz plik Spizarnia.apk na telefon i zainstaluj (Android poprosi o zezwolenie na instalację z tego źródła).
+          files: Shelfie.apk
+          name: Shelfie ${{ github.ref_name }}
+          body: Aplikacja na Androida. Pobierz plik Shelfie.apk na telefon i zainstaluj (Android poprosi o zezwolenie na instalację z tego źródła).

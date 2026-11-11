@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Spiżarnia',
-        short_name: 'Spiżarnia',
+        name: 'Shelfie',
+        short_name: 'Shelfie',
         description: 'Wspólna lodówka, szafki i lista zakupów',
         lang: 'pl',
         start_url: base,

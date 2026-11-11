@@ -5,7 +5,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const FILE = fileURLToPath(new URL('../public/data/lidl.json', import.meta.url));
-const UA = 'SpizarniaBot/0.3 (prywatna aplikacja domowa; jednorazowy import katalogu)';
+const UA = 'ShelfieBot/0.3 (prywatna aplikacja domowa; jednorazowy import katalogu)';
 const DELAY_MS = 1500;
 const PAGE_SIZE = 100;
 const FIELDS = 'code,product_name,product_name_pl,brands,quantity,categories_tags,image_front_small_url';
