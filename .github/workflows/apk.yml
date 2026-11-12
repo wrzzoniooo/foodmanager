@@ -54,7 +54,8 @@ jobs:
         run: |
           cp android/app/build/outputs/apk/debug/app-debug.apk Shelfie.apk
           echo "Odcisk podpisu (musi być taki sam w każdej wersji):"
-          keytool -printcert -jarfile Shelfie.apk | grep -E "SHA256|Owner"
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs Shelfie.apk | grep -E "SHA-256|DN" || true
       - uses: actions/upload-artifact@v4
         with:
           name: Shelfie-apk
