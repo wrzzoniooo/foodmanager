@@ -1,0 +1,2150 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shelfie – makieta podpowiedzi</title>
+<style>:root {
+  /* Paleta Terakota (jasna). Ciemna wersja jest niżej: data-theme="dark" albo "auto" przy ciemnym telefonie. */
+  color-scheme: light;
+  --bg: #f6ede3;
+  --card: #fff9f2;
+  --sage: #b65a3c;
+  --sage-dark: #8a3f27;
+  --sage-light: #f0d9cb;
+  --sage-chip: #f0dfd1;
+  --nav-bg: #ebd3c3;
+  --text: #3a2a22;
+  --muted: #7a6358;
+  --red: #b3402a;
+  --amber-bg: #f3ddaa;
+  --amber-text: #6b4a0f;
+  --ink-sage: #6b3a28;
+  --on-sage: #fff;
+  --on-red: #fff;
+  --nav-ink: #7a4632;
+  --scrim: rgba(58, 42, 34, 0.45);
+  --peek-scrim: rgba(246, 237, 227, 0.6);
+  --peek-scrim-solid: rgba(246, 237, 227, 0.9);
+  --badge-red-bg: #f7d5c8;
+  --badge-red-ink: #8a2f1a;
+  --badge-green-bg: #dce6cf;
+  --badge-green-ink: #3f5a23;
+  --track: #ebd9ca;
+  --fresh-amber: #c98a1a;
+  --ok: #5f7f4a;
+  --select-bg: #f5ddd0;
+  --mini: #e7bfa9;
+  --paper: #fffaf4;
+  --dash: #e3cbb8;
+  --bag-body: #d8a487;
+  --bag-dark: #b97f5f;
+  --tile-line: color-mix(in srgb, var(--sage) 14%, transparent);
+  --font-title: Georgia, 'Times New Roman', serif;
+  --nav-h: 76px;
+  /* Skala odstępów (siatka 4 px). Odstępy wyłącznie przez gap/padding, bez ujemnych marginesów. */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  /* Skala czcionek: tylko te rozmiary, nigdzie inaczej. */
+  --fs-micro: 11px; /* plakietki, tagi, liczniki */
+  --fs-label: 12px; /* podpisy pod ikonami, drobne etykiety */
+  --fs-meta: 13px; /* opisy pomocnicze, nazwy w gęstych układach */
+  --fs-body: 14px; /* przyciski, nagłówki sekcji, pola */
+  --fs-name: 15px; /* nazwy produktów */
+  --fs-lead: 16px; /* tekst główny, pola tekstowe */
+  --fs-lead-l: 18px; /* wyróżnione nazwy, ceny */
+  --fs-title: 20px; /* tytuły okien i kartek */
+  --fs-screen: 28px; /* tytuł ekranu */
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  background-color: var(--bg);
+  /* Tekstura Kafelki: cienkie linie jak kafelki kuchenne, tylko na tle ekranu. */
+  background-image: linear-gradient(var(--tile-line) 1px, transparent 1px), linear-gradient(90deg, var(--tile-line) 1px, transparent 1px);
+  background-size: 30px 30px;
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+ul {
+  padding: 0;
+  list-style: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+:focus-visible {
+  outline: 2px solid var(--sage-dark);
+  outline-offset: 2px;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  padding: calc(env(safe-area-inset-top) + 12px) 16px calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px);
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+
+/* Sekcje z nagłówkiem: nagłówek-treść zawsze s2, między sekcjami zawsze s6. */
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s6);
+}
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+/* ----- nagłówek ----- */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+.head h1 {
+  font-family: var(--font-title);
+  font-weight: 500;
+  font-size: var(--fs-screen);
+  color: var(--sage-dark);
+}
+.head-actions {
+  display: flex;
+  gap: 4px;
+}
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn:active {
+  background: var(--sage-chip);
+}
+.icon-btn.small {
+  width: 36px;
+  height: 36px;
+  color: var(--muted);
+}
+
+/* ----- chipy ----- */
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  flex: none;
+  border: 0;
+  border-radius: 99px;
+  padding: 8px 14px;
+  min-height: 36px;
+  font-size: var(--fs-body);
+  background: var(--sage-chip);
+  color: var(--ink-sage);
+}
+.chip.on {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+
+/* ----- karty i wiersze ----- */
+.card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 12px;
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.name {
+  font-size: var(--fs-name);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.name.big {
+  font-size: var(--fs-lead-l);
+}
+.meta {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+.cat-label {
+  font-size: var(--fs-body);
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.thumb {
+  flex: none;
+  background: var(--sage-light);
+  color: var(--sage-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #fff;
+}
+.hero {
+  display: flex;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s4);
+  border-radius: 24px;
+}
+.hero .grow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s2);
+}
+.bags-card {
+  border-radius: 24px;
+}
+.is-done .name {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.is-done .thumb {
+  opacity: 0.6;
+}
+
+/* ----- kafelki ----- */
+
+/* ----- ilość ----- */
+.qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-name);
+  font-variant-numeric: tabular-nums;
+}
+.qty span {
+  min-width: 18px;
+  text-align: center;
+}
+.qty button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sage-chip);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.qty button:active {
+  background: var(--sage-light);
+}
+
+/* ----- tagi ----- */
+.tag {
+  display: inline-block;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  line-height: 1.4;
+}
+.tag.red {
+  background: var(--red);
+  color: var(--on-red);
+}
+.tag.amber {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+.tag.green {
+  background: var(--sage-light);
+  color: var(--ink-sage);
+}
+
+/* ----- przyciski ----- */
+.btn {
+  border: 0;
+  border-radius: 99px;
+  background: var(--sage);
+  color: var(--on-sage);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  padding: 10px 18px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.btn:active {
+  background: var(--sage-dark);
+}
+.btn.small {
+  font-size: var(--fs-meta);
+  padding: 7px 14px;
+  min-height: 34px;
+}
+.btn.ghost {
+  background: var(--sage-chip);
+  color: var(--ink-sage);
+}
+.btn.ghost:active {
+  background: var(--sage-light);
+}
+.btn.ghost:disabled {
+  color: var(--muted);
+}
+.btn.wide {
+  width: 100%;
+  min-height: 48px;
+  font-size: var(--fs-lead);
+}
+.link {
+  border: 0;
+  background: none;
+  padding: 8px;
+  color: var(--sage-dark);
+  text-decoration: underline;
+  font-size: var(--fs-meta);
+}
+.link-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ----- lista: checkbox ----- */
+.check {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--sage);
+  background: transparent;
+  color: var(--on-sage);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.check.on {
+  background: var(--sage);
+}
+.sticky-action {
+  position: sticky;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 8px);
+  padding-top: 4px;
+}
+
+/* ----- wyszukiwarka ----- */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border-radius: 99px;
+  padding: 0 16px;
+  min-height: 46px;
+  color: var(--muted);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: var(--fs-lead);
+  color: var(--text);
+  outline: none;
+  padding: 10px 0;
+}
+.search:focus-within {
+  outline: 2px solid var(--sage-dark);
+}
+.catalog-search {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.results {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+.results .row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--sage-chip);
+}
+.results .row:last-child {
+  border-bottom: 0;
+}
+
+/* ----- stany puste i notatki ----- */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 32px 16px;
+  color: var(--muted);
+}
+.empty h2 {
+  font-family: var(--font-title);
+  font-weight: 500;
+  font-size: var(--fs-title);
+  color: var(--text);
+}
+.note {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+  padding: 0 4px;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s2);
+}
+.footer-note {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  padding-top: var(--s2);
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+/* ----- dolna nawigacja ----- */
+.nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom) + 12px);
+  width: min(448px, calc(100% - 32px));
+  display: flex;
+  justify-content: space-around;
+  background: var(--nav-bg);
+  border-radius: 99px;
+  padding: 8px 6px;
+  z-index: 10;
+}
+.nav-btn {
+  position: relative;
+  border: 0;
+  background: transparent;
+  color: var(--nav-ink);
+  width: 64px;
+  height: 44px;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-btn.on {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+
+/* ----- toast i arkusz ----- */
+.toast-region {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 20px);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 30;
+}
+.toast {
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 18px;
+  border-radius: 99px;
+  font-size: var(--fs-body);
+  max-width: calc(100% - 32px);
+}
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 20;
+}
+.sheet {
+  width: 100%;
+  max-width: 480px;
+  max-height: 85dvh;
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 28px 28px 0 0;
+  padding: 12px 16px calc(env(safe-area-inset-bottom) + 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sheet-head h2 {
+  font-family: var(--font-title);
+  font-weight: 500;
+  font-size: var(--fs-title);
+  color: var(--sage-dark);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sheet {
+    animation: slide-up 0.2s ease-out;
+  }
+  @keyframes slide-up {
+    from {
+      transform: translateY(24px);
+      opacity: 0;
+    }
+  }
+}
+
+/* ----- okno dodawania produktu ----- */
+.sheet-title {
+  flex: 1;
+}
+.sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.sheet .catalog-search {
+  gap: var(--s4);
+}
+.option {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  color: inherit;
+}
+.option:active {
+  background: var(--sage-chip);
+}
+.stack .tag {
+  align-self: flex-start;
+}
+.chev {
+  flex: none;
+  color: var(--muted);
+}
+.lab {
+  font-size: var(--fs-body);
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.input {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--card);
+  padding: 0 var(--s4);
+  font: inherit;
+  font-size: var(--fs-lead);
+  color: var(--text);
+}
+.input:focus {
+  outline: 2px solid var(--sage-dark);
+}
+.input::placeholder {
+  color: var(--muted);
+}
+.field-error {
+  font-size: var(--fs-meta);
+  color: var(--red);
+}
+.chips.wrap {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+/* ----- skaner na cały ekran ----- */
+.scan {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: #21160f;
+  color: var(--bg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top) + var(--s4)) var(--s4) calc(env(safe-area-inset-bottom) + var(--s4));
+}
+.scan video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.scan-top,
+.scan-mid,
+.scan-bottom {
+  position: relative;
+  z-index: 1;
+}
+.scan-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.scan-top h2 {
+  font-family: var(--font-title);
+  font-weight: 500;
+  font-size: var(--fs-title);
+  padding: var(--s1) var(--s3);
+  border-radius: 99px;
+  background: rgba(33, 22, 15, 0.6);
+}
+.scan-btn {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(33, 22, 15, 0.6);
+  color: var(--bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.scan-mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s4);
+}
+.scan-hint,
+.scan-sub {
+  font-size: var(--fs-body);
+  padding: var(--s1) var(--s3);
+  border-radius: 99px;
+  background: rgba(33, 22, 15, 0.6);
+}
+.scan-sub {
+  font-size: var(--fs-meta);
+}
+.scan-frame {
+  position: relative;
+  width: 78%;
+  max-width: 340px;
+  height: 130px;
+}
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 4px solid var(--sage-light);
+}
+.corner.tl {
+  left: 0;
+  top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 14px 0 0 0;
+}
+.corner.tr {
+  right: 0;
+  top: 0;
+  border-left: 0;
+  border-bottom: 0;
+  border-radius: 0 14px 0 0;
+}
+.corner.bl {
+  left: 0;
+  bottom: 0;
+  border-right: 0;
+  border-top: 0;
+  border-radius: 0 0 0 14px;
+}
+.corner.br {
+  right: 0;
+  bottom: 0;
+  border-left: 0;
+  border-top: 0;
+  border-radius: 0 0 14px 0;
+}
+.scan-line {
+  position: absolute;
+  left: var(--s2);
+  right: var(--s2);
+  top: 50%;
+  height: 2px;
+  background: var(--red);
+}
+.scan-msg {
+  max-width: 320px;
+  padding: var(--s4);
+  border-radius: 20px;
+  background: rgba(33, 22, 15, 0.7);
+  text-align: center;
+  font-size: var(--fs-lead);
+}
+.scan-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s2);
+}
+
+
+/* ----- układy produktów (Lodówka i Szafki) ----- */
+.pgrid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+}
+.pgrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s4) var(--s2);
+}
+.card-hit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s1);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.card-hit:active {
+  transform: scale(0.97);
+}
+.pcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s3);
+}
+.pcard .qty {
+  margin-top: auto;
+  justify-content: space-between;
+  padding-top: var(--s1);
+}
+.pcard-photo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: var(--s1);
+}
+.pcard .card-hit .name,
+.pcard .card-hit .meta {
+  width: 100%;
+}
+.pcard .fresh {
+  width: 100%;
+  margin: var(--s1) 0 0;
+  padding: 0;
+}
+.prow {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) var(--s3) var(--s2) var(--s2);
+}
+.prow-hit {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 1;
+  min-width: 0;
+}
+.prow-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  flex: 1;
+  min-width: 0;
+}
+.prow-fresh {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.prow-fresh .fresh {
+  flex: 1;
+}
+.prow .qty {
+  gap: var(--s1);
+}
+.prow .qty button {
+  width: 32px;
+  height: 32px;
+}
+.pcell-photo {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-bottom: var(--s1);
+}
+.pcell-qty {
+  position: absolute;
+  top: var(--s1);
+  right: var(--s1);
+  min-width: 24px;
+  height: 24px;
+  padding: 0 var(--s2);
+  border-radius: 99px;
+  background: var(--sage);
+  color: var(--on-sage);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pcell-name {
+  font-size: var(--fs-meta);
+  line-height: 1.25;
+  font-weight: 500;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pcell .card-hit {
+  align-items: center;
+  text-align: center;
+}
+.pcell-photo .badge {
+  position: absolute;
+  top: var(--s1);
+  left: var(--s1);
+}
+.pcell-meta {
+  font-size: var(--fs-label);
+  line-height: 1.3;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ----- termin ważności: plakietka i pasek świeżości ----- */
+.badge {
+  display: inline-block;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  line-height: 1.4;
+}
+.badge.red {
+  background: var(--badge-red-bg);
+  color: var(--badge-red-ink);
+}
+.badge.amber {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+.badge.green {
+  background: var(--badge-green-bg);
+  color: var(--badge-green-ink);
+}
+.fresh {
+  display: block;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--track);
+  overflow: hidden;
+}
+.fresh i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  transform-origin: left;
+}
+.fresh i.red {
+  background: var(--red);
+}
+.fresh i.amber {
+  background: var(--fresh-amber);
+}
+.fresh i.green {
+  background: var(--ok);
+}
+
+/* ----- okno Widok i karta produktu ----- */
+.layout-opts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s2);
+}
+.layout-opt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s2) var(--s2) var(--s3);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  text-align: center;
+}
+.layout-opt.on {
+  border-color: var(--sage);
+  background: var(--select-bg);
+}
+.mini {
+  display: grid;
+  gap: var(--s1);
+  height: 64px;
+}
+.mini i {
+  display: block;
+  border-radius: 6px;
+  background: var(--mini);
+}
+.mini.cards {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.mini.rows {
+  grid-template-rows: repeat(3, 1fr);
+}
+.mini.grid {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
+}
+.seg {
+  display: flex;
+  padding: var(--s1);
+  border-radius: 99px;
+  background: var(--sage-chip);
+}
+.seg button {
+  flex: 1;
+  min-height: 40px;
+  padding: var(--s2);
+  border: 0;
+  border-radius: 99px;
+  background: transparent;
+  color: var(--ink-sage);
+  font-size: var(--fs-body);
+}
+.seg button.on {
+  background: var(--sage);
+  color: var(--on-sage);
+  font-weight: 500;
+}
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  min-height: 48px;
+}
+.input.date {
+  width: 168px;
+  min-width: 0;
+  min-height: 40px;
+  height: 40px;
+  padding: 0 var(--s4);
+}
+.sheet-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2);
+}
+.sheet-actions .btn {
+  width: 100%;
+}
+.sheet-actions .span2 {
+  grid-column: 1 / -1;
+}
+
+/* ----- animacje (wyłączone, gdy telefon ma ograniczony ruch) ----- */
+@media (prefers-reduced-motion: no-preference) {
+  .stagger {
+    animation: rise 0.3s ease-out both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  .fresh i {
+    animation: grow 0.5s ease-out both;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  @keyframes grow {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  .card-hit,
+  .layout-opt {
+    transition: transform 0.15s;
+  }
+  .qty-n.bump {
+    animation: bump 0.3s ease-out;
+  }
+  @keyframes bump {
+    50% {
+      transform: scale(1.4);
+    }
+  }
+}
+.qty-n {
+  display: inline-block;
+}
+
+/* ----- filtry kategorii z małymi ikonami ----- */
+.icon-chips {
+  display: flex;
+  gap: var(--s1);
+  overflow-x: auto;
+  padding-bottom: var(--s1);
+  scrollbar-width: none;
+}
+.icon-chips::-webkit-scrollbar {
+  display: none;
+}
+.icon-chip {
+  flex: none;
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-sage);
+  font-size: var(--fs-label);
+  line-height: 1.2;
+}
+.icon-chip-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sage-chip);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.icon-chip.on .icon-chip-dot {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+.icon-chip.on {
+  font-weight: 600;
+}
+.icon-chip:active .icon-chip-dot {
+  transform: scale(0.93);
+}
+
+/* ----- lista zakupów jako kartka ----- */
+.paper {
+  background: var(--paper);
+  border: 1px solid var(--track);
+  border-radius: 20px;
+  padding: var(--s4) var(--s4) var(--s3);
+}
+.paper-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--s2);
+}
+.paper-head h3 {
+  margin: 0;
+  font-family: var(--font-title);
+  font-style: italic;
+  font-weight: 400;
+  font-size: var(--fs-title);
+  color: var(--sage-dark);
+}
+.paper-empty {
+  color: var(--muted);
+  font-size: var(--fs-body);
+  padding: var(--s2) 0;
+}
+.pl-list {
+  display: flex;
+  flex-direction: column;
+}
+.pl-cat {
+  font-size: var(--fs-label);
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--muted);
+  padding-top: var(--s3);
+}
+.pl-li {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s2) 0;
+  border-bottom: 1px dashed var(--dash);
+}
+.pl-li.is-done .name {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+.pl-li.is-done .thumb {
+  opacity: 0.6;
+}
+.pl-li .qty button {
+  width: 32px;
+  height: 32px;
+}
+.paper-add {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding-top: var(--s3);
+}
+.paper-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-lead);
+  padding: 0 var(--s4);
+}
+.paper-input::placeholder {
+  color: var(--muted);
+}
+.paper-input:focus {
+  outline: 2px solid var(--sage-dark);
+}
+.round-btn {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sage-chip);
+  color: var(--ink-sage);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.round-btn.pri {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+.paper .note {
+  padding: var(--s2) 0 0;
+}
+
+/* ----- zakładka Siatki: torba z produktami ----- */
+.bag-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+.bag-wrap {
+  position: relative;
+  padding-top: 72px;
+}
+.bag-handle {
+  position: absolute;
+  top: var(--s2);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 156px;
+  height: 76px;
+  border: 9px solid var(--bag-dark);
+  border-bottom: 0;
+  border-radius: 78px 78px 0 0;
+}
+.bag {
+  position: relative;
+  min-height: 240px;
+  padding: 32px var(--s3) var(--s4);
+  background: var(--bag-body);
+  border-radius: 10px 10px 32px 32px;
+}
+.bag::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: var(--bag-dark);
+  border-radius: 10px 10px 0 0;
+}
+.bag-tile {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s2) var(--s1);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+}
+.bag-tile.sel {
+  border-color: var(--sage-dark);
+}
+.bag-photo {
+  position: relative;
+  display: block;
+}
+.bag-qty {
+  position: absolute;
+  top: calc(var(--s1) * -1);
+  right: calc(var(--s2) * -1);
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: var(--sage);
+  color: var(--on-sage);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bag-name {
+  font-size: var(--fs-meta);
+  line-height: 1.25;
+  font-weight: 500;
+  text-align: center;
+}
+.bag-tile.out {
+  transform: translateY(-72px) scale(0.8);
+  opacity: 0;
+  transition: transform 0.45s ease, opacity 0.45s ease;
+}
+.bag-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s2);
+}
+.bag-actions .btn {
+  width: 100%;
+}
+.bag-actions .span2 {
+  grid-column: 1 / -1;
+}
+.note.center {
+  text-align: center;
+}
+
+/* ----- podgląd po przytrzymaniu produktu ----- */
+.card-hit {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.card-hit img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.card-hit.holding {
+  transform: scale(0.95);
+  transition: transform 0.45s ease-out;
+}
+.peek-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s4);
+  background: var(--peek-scrim);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.peek {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  max-height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s3);
+  background: var(--card);
+  border: 1px solid var(--track);
+  border-radius: 28px;
+}
+.peek-photo {
+  position: relative;
+}
+.peek-photo .badge {
+  position: absolute;
+  top: var(--s3);
+  left: var(--s3);
+  font-size: var(--fs-label);
+}
+.peek-qty {
+  position: absolute;
+  top: var(--s3);
+  right: var(--s3);
+  min-width: 28px;
+  height: 28px;
+  padding: 0 var(--s2);
+  border-radius: 99px;
+  background: var(--sage);
+  color: var(--on-sage);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.peek-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  padding: 0 var(--s1);
+}
+.peek-name {
+  font-size: var(--fs-title);
+  line-height: 1.25;
+  font-weight: 500;
+}
+.peek-text .fresh {
+  margin-top: var(--s2);
+}
+.peek-acts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s2);
+}
+.peek-act {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s3) var(--s1);
+  border: 0;
+  border-radius: 16px;
+  background: var(--sage-chip);
+  color: var(--text);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+.peek-act.pri {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+.peek-act:active {
+  transform: scale(0.95);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .peek {
+    animation: peek-in 0.35s cubic-bezier(0.2, 1.1, 0.3, 1.15) both;
+  }
+  .peek-backdrop {
+    animation: fade-in 0.25s ease-out both;
+  }
+  @keyframes peek-in {
+    from {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .peek-backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: var(--peek-scrim-solid);
+  }
+}
+
+/* ----- ciemny motyw (wybór w oknie Widok: Jasny, Ciemny albo Auto, czyli jak telefon) ----- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #261b17;
+  --card: #33241f;
+  --sage: #d2775a;
+  --sage-dark: #eda58a;
+  --sage-light: #4a3029;
+  --sage-chip: #45302a;
+  --nav-bg: #3c2a24;
+  --text: #f1e4da;
+  --muted: #b79f92;
+  --red: #e3856a;
+  --amber-bg: #5c4413;
+  --amber-text: #f3d9a4;
+  --ink-sage: #ebcbbc;
+  --on-sage: #241612;
+  --on-red: #2b1208;
+  --nav-ink: #e3bfae;
+  --scrim: rgba(0, 0, 0, 0.6);
+  --peek-scrim: rgba(38, 27, 23, 0.6);
+  --peek-scrim-solid: rgba(38, 27, 23, 0.92);
+  --badge-red-bg: #5a2c1c;
+  --badge-red-ink: #f3b9a3;
+  --badge-green-bg: #34402b;
+  --badge-green-ink: #b4d49a;
+  --track: #4a352d;
+  --fresh-amber: #d9a03a;
+  --ok: #8fb47a;
+  --select-bg: #4a2f27;
+  --mini: #6a4338;
+  --paper: #2e201b;
+  --dash: #5a4036;
+  --bag-body: #8a5a44;
+  --bag-dark: #6e4533;
+  --tile-line: color-mix(in srgb, var(--sage) 10%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='auto'] {
+    color-scheme: dark;
+    --bg: #261b17;
+    --card: #33241f;
+    --sage: #d2775a;
+    --sage-dark: #eda58a;
+    --sage-light: #4a3029;
+    --sage-chip: #45302a;
+    --nav-bg: #3c2a24;
+    --text: #f1e4da;
+    --muted: #b79f92;
+    --red: #e3856a;
+    --amber-bg: #5c4413;
+    --amber-text: #f3d9a4;
+    --ink-sage: #ebcbbc;
+    --on-sage: #241612;
+    --on-red: #2b1208;
+    --nav-ink: #e3bfae;
+    --scrim: rgba(0, 0, 0, 0.6);
+    --peek-scrim: rgba(38, 27, 23, 0.6);
+    --peek-scrim-solid: rgba(38, 27, 23, 0.92);
+    --badge-red-bg: #5a2c1c;
+    --badge-red-ink: #f3b9a3;
+    --badge-green-bg: #34402b;
+    --badge-green-ink: #b4d49a;
+    --track: #4a352d;
+    --fresh-amber: #d9a03a;
+    --ok: #8fb47a;
+    --select-bg: #4a2f27;
+    --mini: #6a4338;
+    --paper: #2e201b;
+    --dash: #5a4036;
+    --bag-body: #8a5a44;
+    --bag-dark: #6e4533;
+    --tile-line: color-mix(in srgb, var(--sage) 10%, transparent);
+  }
+}
+
+/* ----- powiadomienia o kończących się produktach ----- */
+.thumb.warn {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-head .link {
+  padding: 0;
+  font-size: var(--fs-body);
+  font-weight: 500;
+}
+
+/* ----- sekcja "W koszyku" na kartce ----- */
+.pl-basket {
+  margin-top: var(--s3);
+  padding: 0 var(--s3);
+  background: var(--select-bg);
+  border-radius: 16px;
+}
+.pl-basket-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s3) 0 var(--s1);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--sage-dark);
+}
+.pl-basket-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--s2);
+  border-radius: 99px;
+  background: var(--sage);
+  color: var(--on-sage);
+  font-size: var(--fs-label);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pl-basket .pl-li {
+  border-bottom-color: var(--mini);
+}
+.pl-basket .pl-li:last-child {
+  border-bottom: 0;
+}
+.pl-basket .thumb {
+  background: var(--mini);
+}
+
+/* ----- przesuwanie wiersza palcem i komunikat z "Cofnij" ----- */
+.swipe-li {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.swipe-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--s4);
+  border-radius: 20px;
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+.swipe-bg.to-list {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+.swipe-bg.to-eaten {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+.swipe-label {
+  display: none;
+  align-items: center;
+  gap: var(--s2);
+}
+.swipe-bg.to-list .swipe-label.start,
+.swipe-bg.to-eaten .swipe-label.end {
+  display: inline-flex;
+}
+.swipe-bg {
+  z-index: 0;
+  pointer-events: none;
+}
+.swipe-fg {
+  position: relative;
+  z-index: 1;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.swipe-fg.settle {
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.swipe-fg.leave {
+  transition: transform 0.24s ease-in;
+}
+.swipe-li.leaving {
+  opacity: 0;
+  transition: opacity 0.24s ease-in;
+}
+.toast.has-action {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding-right: var(--s2);
+  pointer-events: auto;
+}
+.toast-action {
+  border: 0;
+  border-radius: 99px;
+  background: transparent;
+  color: var(--sage-light);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  padding: var(--s2) var(--s3);
+}
+.swipe-li {
+  display: flex;
+}
+.swipe-fg {
+  flex: 1;
+  min-width: 0;
+}
+
+/* karta "produktów w siatkach": dotknięcie otwiera torbę */
+.bags-hit {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--s3);
+  flex: 1;
+  min-width: 0;
+}
+.bags-hit .grow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+
+/* ----- zakładka Lista: pierścień postępu wokół ikony ----- */
+.nav-ringwrap {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--rc) calc(var(--p) * 1%), color-mix(in srgb, currentColor 22%, transparent) 0);
+  -webkit-mask: radial-gradient(circle, transparent 15px, #000 16px);
+  mask: radial-gradient(circle, transparent 15px, #000 16px);
+}
+.nav-btn.on .nav-ring {
+  background: conic-gradient(var(--on-sage) calc(var(--p) * 1%), color-mix(in srgb, var(--on-sage) 30%, transparent) 0);
+}
+
+/* ----- torba podzielona na grupy: Do lodówki i Do szafek ----- */
+.bag-group + .bag-group {
+  margin-top: var(--s4);
+}
+.bag-gh {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0 0 var(--s2);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--text);
+}
+.bag-gc {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--s2);
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--text) 16%, transparent);
+  font-size: var(--fs-label);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.bag-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s2);
+}
+
+/* ----- połączenie telefonów: kod QR i klucz ----- */
+.qr-box {
+  width: 220px;
+  margin: 0 auto;
+  padding: var(--s4);
+  background: #fff;
+  border-radius: 24px;
+}
+.qr-box svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.key-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-body);
+  letter-spacing: 1px;
+}
+.input.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-body);
+  letter-spacing: 1px;
+}
+.confirm-text {
+  font-size: var(--fs-lead);
+  color: var(--text);
+}
+
+.meta.version {
+  text-align: center;
+}
+
+/* ----- paragon: przegląd pozycji i uzgodnienie z siatką ----- */
+.receipt-raw {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--fs-label);
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.receipt-reading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s4) 0;
+}
+.receipt-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.receipt-meter-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.receipt-meter-top .name {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+.receipt-bar {
+  display: flex;
+  gap: var(--s1);
+  height: 8px;
+}
+.receipt-bar i {
+  display: block;
+  border-radius: 4px;
+}
+.receipt-bar .g {
+  background: var(--ok);
+}
+.receipt-bar .a {
+  background: var(--fresh-amber);
+}
+.receipt-bar .n {
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
+}
+.receipt-list.paper {
+  padding: var(--s1) var(--s3);
+}
+.receipt-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+.receipt-photo {
+  position: relative;
+  flex: none;
+}
+.receipt-blank {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.receipt-st {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 18px;
+  height: 18px;
+  box-sizing: content-box;
+  border: 2px solid var(--paper);
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.receipt-st.ok {
+  background: var(--ok);
+}
+.receipt-st.wn {
+  background: var(--fresh-amber);
+}
+.receipt-st.no {
+  background: var(--muted);
+}
+.receipt-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.receipt-chip {
+  flex: none;
+  padding: 2px var(--s3);
+  border-radius: 99px;
+  background: var(--sage-chip);
+  color: var(--ink-sage);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.receipt-chip.nw {
+  background: var(--badge-green-bg);
+  color: var(--badge-green-ink);
+}
+.receipt-chip.up {
+  background: var(--amber-bg);
+  color: var(--amber-text);
+}
+.receipt-chip.act {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+.receipt-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--s2);
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  font-size: var(--fs-label);
+}
+.seg.small {
+  flex: none;
+}
+.seg.small button {
+  min-height: 32px;
+  padding: var(--s1) var(--s3);
+  font-size: var(--fs-meta);
+}
+
+/* ----- lista: najczęściej kupowane ----- */
+.freq-row {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  padding-bottom: var(--s1);
+  scrollbar-width: none;
+}
+.freq-row li {
+  display: flex;
+}
+.freq-row::-webkit-scrollbar {
+  display: none;
+}
+.freq {
+  position: relative;
+  flex: none;
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  padding: var(--s2) var(--s2) var(--s3);
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+}
+.freq {
+  height: 100%;
+}
+.freq.added {
+  opacity: 0.5;
+}
+.freq-name {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  /* dwie linie, reszta ucięta: wszystkie kafelki mają tę samą wysokość i ten sam układ */
+  width: 100%;
+  height: calc(2 * 1.25em);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.freq-every {
+  white-space: nowrap;
+  font-size: var(--fs-micro);
+  color: var(--muted);
+}
+.freq-plus {
+  margin-top: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--on-sage);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ----- sekcje, które można zwinąć (lista zakupów) ----- */
+.fold {
+  display: flex;
+  flex-direction: column;
+}
+.fold-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+  min-height: 32px;
+}
+.fold-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+.fold-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--s2);
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+.fold-chev {
+  transition: transform 0.2s;
+}
+.fold-chev.open {
+  transform: rotate(180deg);
+}
+.fold-body {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+.fold-body.open {
+  grid-template-rows: 1fr;
+}
+.fold-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.fold-body.open .fold-inner {
+  padding-top: var(--s2);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fold-body {
+    transition: grid-template-rows 0.25s ease;
+  }
+}
+
+/* suwaki przewijania nie są potrzebne: przewijanie działa gestem, a pasek nic nie dodaje */
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+.photo-actions {
+  display: flex;
+  gap: var(--s2);
+}
+
+/* przytrzymanie nie zaznacza tekstu (uchwyty zaznaczania psuły wygląd); pola do pisania zostają zaznaczalne */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+</style>
+<style>
+html, body { background: #d9cfc6 !important; background-image: none !important; }
+body { padding: 24px; font-family: system-ui, sans-serif; }
+.board { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.tag { font-size: 18px; font-weight: 700; color: #3a2a22; }
+.phone { width: 375px; height: 700px; overflow: hidden; border-radius: 28px; box-shadow: 0 8px 30px rgba(58,42,34,.25);
+  background-color: var(--bg); background-image: linear-gradient(var(--tile-line) 1px, transparent 1px), linear-gradient(90deg, var(--tile-line) 1px, transparent 1px); background-size: 30px 30px; }
+.phone .app { min-height: 0; height: 100%; padding-bottom: 16px; }
+
+/* podpowiedzi: wiersze */
+.sug { display: flex; flex-direction: column; padding: var(--s1) 0; }
+.sug-row { display: flex; align-items: center; gap: var(--s3); min-height: 52px; padding: var(--s1) 0; border-top: 1px dashed var(--dash); }
+.sug-row:first-child { border-top: 0; }
+.sug-name { flex: 1; min-width: 0; font-size: var(--fs-name); font-weight: 600; }
+.sug-cat { font-size: var(--fs-micro); color: var(--muted); }
+.sug-new .sug-name { color: var(--sage-dark); }
+.sug-new .thumb { background: var(--sage); color: var(--on-sage); }
+/* podpowiedzi: pastylki */
+.sug-chips { display: flex; gap: var(--s2); overflow-x: auto; padding: var(--s3) 0 var(--s1); scrollbar-width: none; }
+.sug-chips li { flex: none; display: flex; }
+.sug-chip { display: inline-flex; align-items: center; gap: var(--s2); height: 36px; padding: 0 var(--s3); border: 0; border-radius: 999px; background: var(--sage-chip); color: var(--sage-dark); font-size: var(--fs-body); font-weight: 600; white-space: nowrap; }
+</style></head>
+<body><div class="board">
+
+<div class="col"><div class="tag">A</div>
+<div class="phone"><div class="app"><section class="screen">
+<header class="head"><h1>Lista zakupów</h1><div class="head-actions">
+  <button type="button" class="icon-btn" aria-label="Dodaj paragon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M12 17V7"/><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"/><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"/></svg></button>
+  <button type="button" class="icon-btn" aria-label="Ustawienia"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></button></div></header>
+<div class="sections"><section class="section"><h2 class="cat-label">Na kartce</h2>
+<div class="paper"><div class="paper-head"><h3>Do kupienia</h3><span class="meta">2 pozycje</span></div>
+<ul class="pl-list"><li class="pl-cat">Nabiał</li>
+<li class="pl-li"><button type="button" class="check" role="checkbox" aria-checked="false"></button><div class="thumb" style="width:40px;height:40px;border-radius:12px"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M8 2h8"/><path d="M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2"/><path d="M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/></svg></div>
+<div class="grow"><div class="name">Masło</div><div class="meta"></div></div>
+<div class="qty"><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/></svg></button><span class="qty-n">1</span><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></li><li class="pl-cat">Mięso i wędliny</li>
+<li class="pl-li"><button type="button" class="check" role="checkbox" aria-checked="false"></button><div class="thumb" style="width:40px;height:40px;border-radius:12px"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"/><path d="m18.5 6 1.754 3.5a6.48 6.48 0 0 1-1.854 8.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"/><circle cx="12.5" cy="8.5" r="2.5"/></svg></div>
+<div class="grow"><div class="name">Filet z kurczaka</div><div class="meta"></div></div>
+<div class="qty"><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/></svg></button><span class="qty-n">2</span><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></li></ul>
+
+<form class="paper-add" onsubmit="return false">
+  <input class="paper-input" value="pomid" aria-label="Dopisz produkt" />
+  <button type="button" class="round-btn" aria-label="Skanuj kod"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M3 5v14"/><path d="M8 5v14"/><path d="M12 5v14"/><path d="M17 5v14"/><path d="M21 5v14"/></svg></button>
+  <button type="submit" class="round-btn pri" aria-label="Dodaj do listy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+</form><ul class="sug"><li class="sug-row"><div class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M15 16a1 1 0 0 0-7-7q-4 4-5.987 12.385a.5.5 0 0 0 .602.602Q11 20 15 16l-3-3"/><path d="M15 9q4 4 7 0-3-4-7 0 4-4 0-7-4 3 0 7"/><path d="m8 15-2.58-2.58"/></svg></div><span class="sug-name">Pomidory</span><span class="sug-cat">Warzywa</span></li><li class="sug-row"><div class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M11.248 3c.273.1.808.53.747 1.36-.05.83-.938 1.2-.989 2.02-.06.78.333 1.24.727 1.62"/><path d="M16.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.725 1.62"/><path d="M19.5 12 22 6"/><path d="M4 12a1 1 0 00-.99 1.133A9 9 0 0012 21a9 9 0 008.99-7.867A1 1 0 0020 12z"/><path d="M6.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.735 1.62"/><path d="M7 21h10"/></svg></div><span class="sug-name">Pomidory suszone</span><span class="sug-cat">Konserwy</span></li><li class="sug-row"><div class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M11.248 3c.273.1.808.53.747 1.36-.05.83-.938 1.2-.989 2.02-.06.78.333 1.24.727 1.62"/><path d="M16.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.725 1.62"/><path d="M19.5 12 22 6"/><path d="M4 12a1 1 0 00-.99 1.133A9 9 0 0012 21a9 9 0 008.99-7.867A1 1 0 0020 12z"/><path d="M6.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.735 1.62"/><path d="M7 21h10"/></svg></div><span class="sug-name">Pomidory w puszce</span><span class="sug-cat">Konserwy</span></li><li class="sug-row sug-new"><span class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><span class="sug-name">Dodaj „pomid”</span></li></ul>
+</div></section></div></section></div></div></div>
+
+<div class="col"><div class="tag">B</div>
+<div class="phone"><div class="app"><section class="screen">
+<header class="head"><h1>Lista zakupów</h1><div class="head-actions">
+  <button type="button" class="icon-btn" aria-label="Dodaj paragon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M12 17V7"/><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"/><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"/></svg></button>
+  <button type="button" class="icon-btn" aria-label="Ustawienia"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></button></div></header>
+<div class="sections"><section class="section"><h2 class="cat-label">Na kartce</h2>
+<div class="paper"><div class="paper-head"><h3>Do kupienia</h3><span class="meta">2 pozycje</span></div>
+<ul class="pl-list"><li class="pl-cat">Nabiał</li>
+<li class="pl-li"><button type="button" class="check" role="checkbox" aria-checked="false"></button><div class="thumb" style="width:40px;height:40px;border-radius:12px"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M8 2h8"/><path d="M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2"/><path d="M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/></svg></div>
+<div class="grow"><div class="name">Masło</div><div class="meta"></div></div>
+<div class="qty"><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/></svg></button><span class="qty-n">1</span><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></li><li class="pl-cat">Mięso i wędliny</li>
+<li class="pl-li"><button type="button" class="check" role="checkbox" aria-checked="false"></button><div class="thumb" style="width:40px;height:40px;border-radius:12px"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"/><path d="m18.5 6 1.754 3.5a6.48 6.48 0 0 1-1.854 8.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"/><circle cx="12.5" cy="8.5" r="2.5"/></svg></div>
+<div class="grow"><div class="name">Filet z kurczaka</div><div class="meta"></div></div>
+<div class="qty"><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/></svg></button><span class="qty-n">2</span><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></li></ul>
+<ul class="sug-chips"><li><button type="button" class="sug-chip"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M15 16a1 1 0 0 0-7-7q-4 4-5.987 12.385a.5.5 0 0 0 .602.602Q11 20 15 16l-3-3"/><path d="M15 9q4 4 7 0-3-4-7 0 4-4 0-7-4 3 0 7"/><path d="m8 15-2.58-2.58"/></svg>Pomidory</button></li><li><button type="button" class="sug-chip"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M11.248 3c.273.1.808.53.747 1.36-.05.83-.938 1.2-.989 2.02-.06.78.333 1.24.727 1.62"/><path d="M16.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.725 1.62"/><path d="M19.5 12 22 6"/><path d="M4 12a1 1 0 00-.99 1.133A9 9 0 0012 21a9 9 0 008.99-7.867A1 1 0 0020 12z"/><path d="M6.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.735 1.62"/><path d="M7 21h10"/></svg>Pomidory suszone</button></li><li><button type="button" class="sug-chip"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M11.248 3c.273.1.808.53.747 1.36-.05.83-.938 1.2-.989 2.02-.06.78.333 1.24.727 1.62"/><path d="M16.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.725 1.62"/><path d="M19.5 12 22 6"/><path d="M4 12a1 1 0 00-.99 1.133A9 9 0 0012 21a9 9 0 008.99-7.867A1 1 0 0020 12z"/><path d="M6.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.735 1.62"/><path d="M7 21h10"/></svg>Pomidory w puszce</button></li><li><button type="button" class="sug-chip"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M11.248 3c.273.1.808.53.747 1.36-.05.83-.938 1.2-.989 2.02-.06.78.333 1.24.727 1.62"/><path d="M16.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.725 1.62"/><path d="M19.5 12 22 6"/><path d="M4 12a1 1 0 00-.99 1.133A9 9 0 0012 21a9 9 0 008.99-7.867A1 1 0 0020 12z"/><path d="M6.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.735 1.62"/><path d="M7 21h10"/></svg>Koncentrat pomidorowy</button></li></ul>
+<form class="paper-add" onsubmit="return false">
+  <input class="paper-input" value="pomid" aria-label="Dopisz produkt" />
+  <button type="button" class="round-btn" aria-label="Skanuj kod"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M3 5v14"/><path d="M8 5v14"/><path d="M12 5v14"/><path d="M17 5v14"/><path d="M21 5v14"/></svg></button>
+  <button type="submit" class="round-btn pri" aria-label="Dodaj do listy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+</form>
+</div></section></div></section></div></div></div>
+
+<div class="col"><div class="tag">C</div>
+<div class="phone"><div class="app"><section class="screen">
+<header class="head"><h1>Lista zakupów</h1><div class="head-actions">
+  <button type="button" class="icon-btn" aria-label="Dodaj paragon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M12 17V7"/><path d="M16 8h-6a2 2 0 0 0 0 4h4a2 2 0 0 1 0 4H8"/><path d="M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z"/></svg></button>
+  <button type="button" class="icon-btn" aria-label="Ustawienia"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg></button></div></header>
+<div class="sections"><section class="section"><h2 class="cat-label">Na kartce</h2>
+<div class="paper"><div class="paper-head"><h3>Do kupienia</h3><span class="meta">2 pozycje</span></div>
+<ul class="pl-list"><li class="pl-cat">Nabiał</li>
+<li class="pl-li"><button type="button" class="check" role="checkbox" aria-checked="false"></button><div class="thumb" style="width:40px;height:40px;border-radius:12px"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M8 2h8"/><path d="M9 2v2.789a4 4 0 0 1-.672 2.219l-.656.984A4 4 0 0 0 7 10.212V20a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9.789a4 4 0 0 0-.672-2.219l-.656-.984A4 4 0 0 1 15 4.788V2"/><path d="M7 15a6.472 6.472 0 0 1 5 0 6.47 6.47 0 0 0 5 0"/></svg></div>
+<div class="grow"><div class="name">Masło</div><div class="meta"></div></div>
+<div class="qty"><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/></svg></button><span class="qty-n">1</span><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></li><li class="pl-cat">Mięso i wędliny</li>
+<li class="pl-li"><button type="button" class="check" role="checkbox" aria-checked="false"></button><div class="thumb" style="width:40px;height:40px;border-radius:12px"><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M16.4 13.7A6.5 6.5 0 1 0 6.28 6.6c-1.1 3.13-.78 3.9-3.18 6.08A3 3 0 0 0 5 18c4 0 8.4-1.8 11.4-4.3"/><path d="m18.5 6 1.754 3.5a6.48 6.48 0 0 1-1.854 8.2C15.4 20.2 11 22 7 22a3 3 0 0 1-2.68-1.66L2.4 16.5"/><circle cx="12.5" cy="8.5" r="2.5"/></svg></div>
+<div class="grow"><div class="name">Filet z kurczaka</div><div class="meta"></div></div>
+<div class="qty"><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/></svg></button><span class="qty-n">2</span><button type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button></div></li></ul>
+<ul class="sug"><li class="sug-row"><div class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M15 16a1 1 0 0 0-7-7q-4 4-5.987 12.385a.5.5 0 0 0 .602.602Q11 20 15 16l-3-3"/><path d="M15 9q4 4 7 0-3-4-7 0 4-4 0-7-4 3 0 7"/><path d="m8 15-2.58-2.58"/></svg></div><span class="sug-name">Pomidory</span><span class="sug-cat">Warzywa</span></li><li class="sug-row"><div class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M11.248 3c.273.1.808.53.747 1.36-.05.83-.938 1.2-.989 2.02-.06.78.333 1.24.727 1.62"/><path d="M16.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.725 1.62"/><path d="M19.5 12 22 6"/><path d="M4 12a1 1 0 00-.99 1.133A9 9 0 0012 21a9 9 0 008.99-7.867A1 1 0 0020 12z"/><path d="M6.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.735 1.62"/><path d="M7 21h10"/></svg></div><span class="sug-name">Pomidory suszone</span><span class="sug-cat">Konserwy</span></li><li class="sug-row"><div class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M11.248 3c.273.1.808.53.747 1.36-.05.83-.938 1.2-.989 2.02-.06.78.333 1.24.727 1.62"/><path d="M16.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.725 1.62"/><path d="M19.5 12 22 6"/><path d="M4 12a1 1 0 00-.99 1.133A9 9 0 0012 21a9 9 0 008.99-7.867A1 1 0 0020 12z"/><path d="M6.252 3c.268.1.794.53.745 1.36-.06.83-.923 1.2-.993 2.02-.05.78.338 1.24.735 1.62"/><path d="M7 21h10"/></svg></div><span class="sug-name">Pomidory w puszce</span><span class="sug-cat">Konserwy</span></li><li class="sug-row sug-new"><span class="thumb" style="width:36px;height:36px;border-radius:11px"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><span class="sug-name">Dodaj „pomid”</span></li></ul>
+<form class="paper-add" onsubmit="return false">
+  <input class="paper-input" value="pomid" aria-label="Dopisz produkt" />
+  <button type="button" class="round-btn" aria-label="Skanuj kod"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M3 5v14"/><path d="M8 5v14"/><path d="M12 5v14"/><path d="M17 5v14"/><path d="M21 5v14"/></svg></button>
+  <button type="submit" class="round-btn pri" aria-label="Dodaj do listy"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+</form>
+</div></section></div></section></div></div></div>
+</div></body></html>
