@@ -33,11 +33,28 @@ jobs:
           APP_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '1.0.0' }}
           APP_VERSION_CODE: ${{ github.run_number }}
       - run: npx cap sync android
+      # Stały klucz podpisu: dzięki niemu nowa wersja instaluje się NA starą (z zachowaniem danych w telefonie).
+      # Klucz leży w sekretach repozytorium (SHELFIE_KEYSTORE_B64), a nie w kodzie. Bez sekretu build dostaje losowy
+      # klucz i trzeba odinstalować starą aplikację przed instalacją.
+      - name: Ustaw stały klucz podpisu
+        env:
+          KEYSTORE_B64: ${{ secrets.SHELFIE_KEYSTORE_B64 }}
+        run: |
+          mkdir -p ~/.android
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > ~/.android/debug.keystore
+            echo "Stały klucz podpisu ustawiony."
+          else
+            echo "::warning::Brak sekretu SHELFIE_KEYSTORE_B64: APK dostanie losowy klucz i nie zainstaluje się na starej wersji."
+          fi
       - name: Zbuduj APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
       - name: Nazwij plik
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk Shelfie.apk
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk Shelfie.apk
+          echo "Odcisk podpisu (musi być taki sam w każdej wersji):"
+          keytool -printcert -jarfile Shelfie.apk | grep -E "SHA256|Owner"
       - uses: actions/upload-artifact@v4
         with:
           name: Shelfie-apk
