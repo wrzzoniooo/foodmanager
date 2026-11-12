@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LayoutGrid, Plus, Search, Settings, ShoppingBag, ShoppingBasket, X, type LucideIcon } from 'lucide-react';
 import { useStore } from '../store';
-import { CATEGORIES, defaultPlaceFor } from '../categories';
+import { CATEGORIES } from '../categories';
 import { preferredPlace } from '../habits';
 import { buildSuggestions } from '../insights';
 import { daysUntil, pluralPl } from '../dates';
@@ -27,6 +27,12 @@ function joinNames(names: string[]): string {
 const PLACE_LABEL: Record<Place, { title: string; added: string; genitive: string }> = {
   fridge: { title: 'Lodówka', added: 'do lodówki', genitive: 'Lodówki' },
   pantry: { title: 'Szafki', added: 'do szafek', genitive: 'Szafek' },
+};
+
+/** Zakładki kategorii widoczne zawsze (reszta pojawia się, gdy coś w niej leży). */
+const ALWAYS_TABS: Record<Place, CategoryId[]> = {
+  fridge: ['nabial', 'sery', 'mieso', 'warzywa', 'owoce', 'napoje', 'sosy', 'pieczywo', 'slodycze', 'mrozonki', 'inne'],
+  pantry: ['pieczywo', 'owoce', 'sypkie', 'konserwy', 'sosy', 'napoje', 'slodycze', 'slone', 'inne'],
 };
 
 export function StockScreen({ place }: { place: Place }) {
@@ -66,9 +72,9 @@ export function StockScreen({ place }: { place: Place }) {
     entries: visible.filter((e) => e.p.category === c.id).sort((a, b) => a.p.name.localeCompare(b.p.name, 'pl')),
   })).filter((g) => g.entries.length > 0);
 
-  // Zakładki: kategorie, które są w tym miejscu, oraz te, które zwykle tu trafiają (w szafkach zawsze np. "Słone").
+  // Zakładki: stały zestaw dla danego miejsca oraz każda kategoria, w której coś tu leży.
   const presentCategories = CATEGORIES.filter(
-    (c) => defaultPlaceFor(c.id) === place || placeEntries.some((e) => e.p.category === c.id),
+    (c) => ALWAYS_TABS[place].includes(c.id) || placeEntries.some((e) => e.p.category === c.id),
   );
   const chipOptions: { id: CategoryId | 'all'; label: string; Icon: LucideIcon }[] = [
     { id: 'all', label: 'Wszystko', Icon: LayoutGrid },
