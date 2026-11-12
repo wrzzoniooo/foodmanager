@@ -236,7 +236,10 @@ export function SettingsSheet({ onClose }: { onClose: () => void }) {
             </section>
           ) : null}
         </div>
-        <div className="meta version">Shelfie {__APP_VERSION__}</div>
+        <div className="meta version">
+          <b>Shelfie {__APP_VERSION__}</b>
+          <span>© 2026 wrzzoniooo</span>
+        </div>
       </div>
     </Sheet>
   );

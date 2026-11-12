@@ -7,6 +7,7 @@ import { BottomNav, ToastProvider, type Tab } from './components/ui';
 import { StockScreen } from './screens/StockScreen';
 import { ListScreen } from './screens/ListScreen';
 import { onNoticeTap, syncShoppingNotice } from './shoppingNotice';
+import { Splash } from './components/Splash';
 
 function Shell() {
   const [tab, setTab] = useState<Tab>('fridge');
@@ -51,6 +52,7 @@ export default function App() {
       <SyncProvider>
       <CatalogProvider>
         <ToastProvider>
+          <Splash />
           <Shell />
         </ToastProvider>
       </CatalogProvider>

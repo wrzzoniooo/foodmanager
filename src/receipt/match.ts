@@ -150,6 +150,20 @@ export function suggestProducts(query: string, products: Product[], limit = 6): 
     }
     if (bestRank >= 0) found.push({ s: { product: p, via }, rank: bestRank, len: p.name.length });
   }
-  found.sort((a, b) => b.rank - a.rank || a.len - b.len || a.s.product.name.localeCompare(b.s.product.name, 'pl'));
-  return found.slice(0, limit).map((f) => f.s);
+  found.sort(
+    (a, b) =>
+      b.rank - a.rank ||
+      Number(!!a.s.product.catalog) - Number(!!b.s.product.catalog) ||
+      a.len - b.len ||
+      a.s.product.name.localeCompare(b.s.product.name, 'pl'),
+  );
+  // Ta sama nazwa raz: produkt użytkownika ma pierwszeństwo przed pozycją słownika.
+  const seen = new Set<string>();
+  const unique = found.filter((f) => {
+    const key = normalize(f.s.product.name);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return unique.slice(0, limit).map((f) => f.s);
 }

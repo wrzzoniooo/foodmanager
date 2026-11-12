@@ -1,11 +1,10 @@
 import { Fragment, useMemo, useState } from 'react';
 import { Barcode, Check, Plus, Receipt, Settings, ShoppingBasket, X } from 'lucide-react';
 import { useStore } from '../store';
-import { CATEGORIES } from '../categories';
+import { CATEGORIES, CATEGORY_BY_ID } from '../categories';
 import { buildSuggestions, frequentProducts } from '../insights';
 import { pluralPl } from '../dates';
 import { AddProductSheet } from '../components/AddProductSheet';
-import { CatalogSearch } from '../components/CatalogSearch';
 import { Collapsible } from '../components/Collapsible';
 import { ReceiptSheet } from '../components/ReceiptSheet';
 import { matchLines, suggestProducts } from '../receipt/match';
@@ -27,13 +26,14 @@ function capitalize(text: string): string {
 export function ListScreen() {
   const { state, dispatch, productById } = useStore();
   const toast = useToast();
-  const [query, setQuery] = useState('');
   const [draft, setDraft] = useState('');
   const [sheet, setSheet] = useState<'menu' | 'scan' | null>(null);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const suggestions = useMemo(() => buildSuggestions(state), [state]);
+  // Podpowiedzi ze słownika pod polem "Dopisz produkt" (po 2 literach).
+  const hints = useMemo(() => (draft.trim().length >= 2 ? suggestProducts(draft, state.products, 3) : []), [draft, state.products]);
   const frequent = useMemo(() => frequentProducts(state), [state]);
   const onList = new Set(state.list.map((x) => x.productId));
   const entries: Entry[] = state.list.flatMap((l) => {
@@ -50,6 +50,12 @@ export function ListScreen() {
     markShoppingFinished();
     dispatch({ type: 'finishShopping' });
     toast(`${done.length} ${pluralPl(done.length, 'produkt trafił', 'produkty trafiły', 'produktów trafiło')} do siatek`);
+  };
+
+  const addProduct = (product: Product) => {
+    dispatch({ type: 'listAdd', productId: product.id });
+    toast(`${product.name} na liście`);
+    setDraft('');
   };
 
   /** Plus przy kartce: wpisana nazwa trafia na listę; przy pustym polu otwiera się pełne okno dodawania. */
@@ -73,9 +79,7 @@ export function ListScreen() {
       defaultPlace: kind?.place ?? 'pantry',
     };
     if (!existing) dispatch({ type: 'productAdd', product });
-    dispatch({ type: 'listAdd', productId: product.id });
-    toast(`${product.name} na liście`);
-    setDraft('');
+    addProduct(product);
   };
 
   const renderRow = (e: Entry) => (
@@ -117,19 +121,8 @@ export function ListScreen() {
         </div>
       </header>
 
-      <CatalogSearch
-        query={query}
-        onQuery={setQuery}
-        placeholder="Szukaj produktów Lidla"
-        actionLabel="Dodaj"
-        onPick={(p) => {
-          dispatch({ type: 'listAdd', productId: p.id });
-          toast(`${p.name} na liście`);
-        }}
-      />
-
       <div className="sections">
-        {frequent.length > 0 && !query.trim() ? (
+        {frequent.length > 0 ? (
           <Collapsible id="frequent" title="Najczęściej kupujecie" count={frequent.length}>
             <ul className="freq-row">
               {frequent.map(({ product, every }) => {
@@ -159,7 +152,7 @@ export function ListScreen() {
             </ul>
           </Collapsible>
         ) : null}
-        {suggestions.length > 0 && !query.trim() ? (
+        {suggestions.length > 0 ? (
           <Collapsible
             id="missing"
             title="Może brakuje?"
@@ -259,6 +252,27 @@ export function ListScreen() {
                 <Plus size={20} aria-hidden="true" />
               </button>
             </form>
+            {draft.trim().length >= 2 ? (
+              <ul className="sug" aria-label="Podpowiedzi">
+                {hints.map(({ product }) => (
+                  <li key={product.id}>
+                    <button type="button" className="sug-row" onClick={() => addProduct(product)}>
+                      <ProductImage product={product} size={36} />
+                      <span className="sug-name">{product.name}</span>
+                      <span className="sug-cat">{CATEGORY_BY_ID[product.category].short}</span>
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button type="button" className="sug-row sug-new" onClick={addDraft}>
+                    <span className="thumb" style={{ width: 36, height: 36, borderRadius: 11 }}>
+                      <Plus size={17} aria-hidden="true" />
+                    </span>
+                    <span className="sug-name">Dodaj „{draft.trim()}”</span>
+                  </button>
+                </li>
+              </ul>
+            ) : null}
           </div>
         </section>
       </div>

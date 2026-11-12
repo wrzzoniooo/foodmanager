@@ -1756,7 +1756,15 @@ button:disabled {
 }
 
 .meta.version {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
   text-align: center;
+}
+.meta.version b {
+  font-weight: 600;
+  color: var(--text);
 }
 
 /* ----- paragon: przegląd pozycji i uzgodnienie z siatką ----- */
@@ -2052,4 +2060,79 @@ input,
 textarea {
   -webkit-user-select: text;
   user-select: text;
+}
+
+/* podpowiedzi pod polem "Dopisz produkt" */
+.sug {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s1) 0 0;
+}
+.sug-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 52px;
+  padding: var(--s1) 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+}
+.sug li + li {
+  border-top: 1px dashed var(--dash);
+}
+.sug-name {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-name);
+  font-weight: 600;
+}
+.sug-cat {
+  font-size: var(--fs-micro);
+  color: var(--muted);
+}
+.sug-new .sug-name {
+  color: var(--sage-dark);
+}
+.sug-new .thumb {
+  background: var(--sage);
+  color: var(--on-sage);
+}
+
+/* ekran startowy: kolor i logo jak ikona aplikacji, nazwa pod logo na tej samej osi */
+.splash {
+  --splash-bg: #b65a3c;
+  --splash-ink: #f6ede3;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s5);
+  background: var(--splash-bg);
+  transition: opacity 0.4s ease;
+}
+.splash.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+.splash-logo {
+  display: block;
+  width: 84px;
+  height: 127px;
+}
+.splash-name {
+  font-family: var(--font-title);
+  font-size: var(--fs-screen);
+  line-height: 1.2;
+  color: var(--splash-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash {
+    transition: none;
+  }
 }
