@@ -86,6 +86,25 @@ for (const [name, scale] of Object.entries(DENSITIES)) {
 const gradlePath = `${ROOT}android/app/build.gradle`;
 let gradle = await readFile(gradlePath, 'utf8');
 gradle = gradle.replace(/versionCode \d+/, `versionCode ${VERSION_CODE}`).replace(/versionName "[^"]*"/, `versionName "${VERSION}"`);
+// 5) Stały klucz podpisu (sekret repozytorium zapisany jako ~/.android/debug.keystore): wymuszamy go w konfiguracji,
+// bo samo podłożenie pliku nie zawsze wystarcza i Gradle potrafi wygenerować własny klucz.
+if (process.env.SHELFIE_SIGN === '1') {
+  const signing = `signingConfigs {
+        shelfie {
+            storeFile file(System.getProperty('user.home') + '/.android/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.shelfie
+        }`;
+  if (!gradle.includes('buildTypes {')) throw new Error('Brak sekcji buildTypes w build.gradle');
+  gradle = gradle.replace('buildTypes {', signing);
+  console.log('Podpisywanie stałym kluczem włączone.');
+}
 await writeFile(gradlePath, gradle);
 
 console.log(`Projekt Android gotowy: wersja ${VERSION} (${VERSION_CODE})`);

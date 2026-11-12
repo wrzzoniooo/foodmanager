@@ -32,6 +32,7 @@ jobs:
         env:
           APP_VERSION: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || '1.0.0' }}
           APP_VERSION_CODE: ${{ github.run_number }}
+          SHELFIE_SIGN: ${{ secrets.SHELFIE_KEYSTORE_B64 != '' && '1' || '' }}
       - run: npx cap sync android
       # Stały klucz podpisu: dzięki niemu nowa wersja instaluje się NA starą (z zachowaniem danych w telefonie).
       # Klucz leży w sekretach repozytorium (SHELFIE_KEYSTORE_B64), a nie w kodzie. Bez sekretu build dostaje losowy
@@ -44,6 +45,8 @@ jobs:
           if [ -n "$KEYSTORE_B64" ]; then
             echo "$KEYSTORE_B64" | base64 -d > ~/.android/debug.keystore
             echo "Stały klucz podpisu ustawiony."
+            INFO=$(keytool -list -keystore ~/.android/debug.keystore -storepass android 2>&1 | tr -s '\n' ' ' | cut -c1-400)
+            echo "::notice::keystore: $INFO"
           else
             echo "::warning::Brak sekretu SHELFIE_KEYSTORE_B64: APK dostanie losowy klucz i nie zainstaluje się na starej wersji."
           fi
