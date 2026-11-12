@@ -785,33 +785,27 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: var(--s2);
-  padding: var(--s2);
+  padding: var(--s3);
 }
 .pcard .qty {
   margin-top: auto;
   justify-content: space-between;
-  padding: 0 var(--s1) var(--s1);
+  padding-top: var(--s1);
 }
 .pcard-photo {
-  position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
   margin-bottom: var(--s1);
 }
-.pcard-photo .badge {
-  position: absolute;
-  top: var(--s2);
-  left: var(--s2);
-}
 .pcard .card-hit .name,
-.pcard .card-hit .meta,
-.pcard .fresh {
-  padding: 0 var(--s1);
+.pcard .card-hit .meta {
   width: 100%;
 }
 .pcard .fresh {
-  width: calc(100% - var(--s2));
-  margin: var(--s1) var(--s1) 0;
+  width: 100%;
+  margin: var(--s1) 0 0;
   padding: 0;
 }
 .prow {
@@ -2025,4 +2019,16 @@ button:disabled {
   .fold-body {
     transition: grid-template-rows 0.25s ease;
   }
+}
+
+/* suwaki przewijania nie są potrzebne: przewijanie działa gestem, a pasek nic nie dodaje */
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+.photo-actions {
+  display: flex;
+  gap: var(--s2);
 }

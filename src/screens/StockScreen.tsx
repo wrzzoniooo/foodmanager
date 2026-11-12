@@ -333,6 +333,7 @@ export function StockScreen({ place }: { place: Place }) {
           onExpiry={(expires) => dispatch({ type: 'stockExpiry', stockId: openEntry.s.id, expires })}
           onRemove={(reason) => removeEntry(openEntry, reason)}
           onAddToList={() => addEntryToList(openEntry)}
+          onPhoto={(photo) => dispatch({ type: 'productPhoto', productId: openEntry.p.id, photo })}
           focusDate={focusDate}
         />
       ) : null}

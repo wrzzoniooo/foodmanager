@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import type { AppState, Place, Product, StockItem } from './types';
-import { createSeed, PRODUCTS as DEMO_PRODUCTS } from './data/seed';
+import { createSeed } from './data/seed';
 import { preferredPlace, recordPlace } from './habits';
 import { applyRows, type Row } from './sync/rows';
 import { applyReceipt, type ReceiptItem } from './receipt/reconcile';
@@ -24,6 +24,7 @@ type Action =
   | { type: 'dismissSuggestion'; productId: string }
   | { type: 'catalogMerge'; products: Product[] }
   | { type: 'productAdd'; product: Product }
+  | { type: 'productPhoto'; productId: string; photo?: string }
   | { type: 'remoteApply'; rows: Row[] }
   | {
       type: 'receiptApply';
@@ -183,6 +184,16 @@ function reducer(state: AppState, action: Action): AppState {
       if (added.length === 0 && kept.every((p, i) => p === state.products[i])) return state;
       return { ...state, products: [...kept, ...added] };
     }
+    case 'productPhoto':
+      // Własne zdjęcie: produkt z katalogu przestaje być "tylko lokalny", żeby zdjęcie trafiło też na drugi telefon.
+      return {
+        ...state,
+        products: state.products.map((p) =>
+          p.id === action.productId
+            ? { ...p, imageUrl: action.photo, catalog: action.photo ? undefined : p.catalog }
+            : p,
+        ),
+      };
     case 'productAdd':
       return state.products.some((p) => p.id === action.product.id)
         ? state
@@ -218,15 +229,6 @@ function reducer(state: AppState, action: Action): AppState {
   }
 }
 
-/** Produkty przykładowe zapisane w telefonie przed dodaniem zdjęć dostają teraz nazwy i zdjęcia prawdziwych produktów. */
-function withDemoPhotos(products: Product[]): Product[] {
-  const demo = new Map(DEMO_PRODUCTS.map((p) => [p.id, p]));
-  return products.map((p) => {
-    const d = demo.get(p.id);
-    return d && d.imageUrl && !p.imageUrl ? { ...p, name: d.name, brand: d.brand, size: d.size, imageUrl: d.imageUrl } : p;
-  });
-}
-
 function load(): AppState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -239,7 +241,7 @@ function load(): AppState {
         Array.isArray(parsed.events)
       ) {
         const state = { dismissed: {}, purchases: [], habits: {}, receipts: {}, receiptMap: {}, ...parsed } as AppState;
-        return { ...state, products: withDemoPhotos(state.products) };
+        return state;
       }
     }
   } catch {

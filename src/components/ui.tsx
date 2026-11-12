@@ -17,7 +17,8 @@ export function ProductImage({
 }) {
   const [failed, setFailed] = useState(false);
   const { Icon } = CATEGORY_BY_ID[product.category];
-  const showImage = product.imageUrl && !failed;
+  // Zdjęcia z internetu nie są pokazywane: tylko własne (zrobione lub wybrane w aplikacji), zapisane jako data URL.
+  const showImage = product.imageUrl?.startsWith('data:') && !failed;
   const style = fluid
     ? { width: '100%', borderRadius: 16, ...(fluid === 'square' ? { aspectRatio: '1 / 1' } : { height: fluid }) }
     : { width: size, height: size, borderRadius: Math.round(size * 0.3) };

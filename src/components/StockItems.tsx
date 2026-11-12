@@ -231,7 +231,7 @@ export function StockList({ layout, entries, onOpen, onPeek, onSwipe, onAdjust }
             >
               <PressButton className="card-hit" onTap={() => onOpen(e.s.id)} onLong={() => onPeek(e.s.id)}>
                 <span className="pcard-photo">
-                  <ProductImage product={e.p} fluid={88} />
+                  <ProductImage product={e.p} size={44} />
                   <ExpiryBadge expires={e.s.expires} />
                 </span>
                 <span className="name">{e.p.name}</span>
@@ -247,7 +247,7 @@ export function StockList({ layout, entries, onOpen, onPeek, onSwipe, onAdjust }
           return (
             <SwipeRow key={e.s.id} cardClass="prow" style={style} onRight={() => onSwipe(e, 'list')} onLeft={() => onSwipe(e, 'eaten')}>
               <PressButton className="card-hit prow-hit" onTap={() => onOpen(e.s.id)} onLong={() => onPeek(e.s.id)}>
-                <ProductImage product={e.p} size={56} />
+                <ProductImage product={e.p} size={44} />
                 <span className="prow-text">
                   <span className="name">{e.p.name}</span>
                   <span className="meta">

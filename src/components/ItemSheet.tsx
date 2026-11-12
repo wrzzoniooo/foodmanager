@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { Check, ShoppingCart, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Camera, Check, ShoppingCart, Trash2 } from 'lucide-react';
+import { fileToThumbnail } from '../off';
 import { ExpiryBadge, Freshness, meta, type Entry } from './StockItems';
 import { ProductImage, QtyStepper, Sheet } from './ui';
 
@@ -11,6 +12,7 @@ export function ItemSheet({
   onExpiry,
   onRemove,
   onAddToList,
+  onPhoto,
   focusDate = false,
 }: {
   focusDate?: boolean;
@@ -20,9 +22,22 @@ export function ItemSheet({
   onExpiry: (expires: string) => void;
   onRemove: (reason: 'eaten' | 'trashed') => void;
   onAddToList: () => void;
+  onPhoto: (photo?: string) => void;
 }) {
   const { s, p } = entry;
   const dateRef = useRef<HTMLInputElement>(null);
+  const photoInput = useRef<HTMLInputElement>(null);
+  const [photoError, setPhotoError] = useState(false);
+  const hasPhoto = Boolean(p.imageUrl?.startsWith('data:'));
+  const pickPhoto = async (file?: File) => {
+    if (!file) return;
+    setPhotoError(false);
+    try {
+      onPhoto(await fileToThumbnail(file, 192));
+    } catch {
+      setPhotoError(true);
+    }
+  };
   // "Termin" z podglądu: od razu pokazujemy wybór daty (przeglądarka zezwala, bo to ciąg dalszy dotknięcia).
   useEffect(() => {
     if (!focusDate) return;
@@ -50,6 +65,21 @@ export function ItemSheet({
           <span className="lab">Ilość</span>
           <QtyStepper qty={s.qty} name={p.name} min={1} onChange={onAdjust} />
         </div>
+        <div className="field-row">
+          <span className="lab">Zdjęcie</span>
+          <div className="photo-actions">
+            <button type="button" className="btn small ghost" onClick={() => photoInput.current?.click()}>
+              <Camera size={16} aria-hidden="true" /> {hasPhoto ? 'Zmień' : 'Dodaj'}
+            </button>
+            {hasPhoto ? (
+              <button type="button" className="btn small ghost" onClick={() => onPhoto(undefined)}>
+                <Trash2 size={16} aria-hidden="true" /> Usuń
+              </button>
+            ) : null}
+            <input ref={photoInput} type="file" accept="image/*" hidden onChange={(e) => void pickPhoto(e.target.files?.[0])} />
+          </div>
+        </div>
+        {photoError ? <div className="meta">Nie udało się wczytać zdjęcia. Spróbuj innego.</div> : null}
         <label className="field-row">
           <span className="lab">Termin ważności</span>
           <input
