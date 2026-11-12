@@ -2,7 +2,7 @@
 async function prepare(file: File): Promise<HTMLCanvasElement> {
   const bitmap = await createImageBitmap(file);
   const target = 1800;
-  const scale = Math.min(2, target / bitmap.width);
+  const scale = Math.min(4, target / bitmap.width);
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(bitmap.width * scale);
   canvas.height = Math.round(bitmap.height * scale);

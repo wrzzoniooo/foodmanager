@@ -9,6 +9,7 @@ import { CatalogSearch } from '../components/CatalogSearch';
 import { Collapsible } from '../components/Collapsible';
 import { ReceiptSheet } from '../components/ReceiptSheet';
 import { matchLines } from '../receipt/match';
+import { markShoppingFinished } from '../shoppingNotice';
 import { SettingsSheet } from '../components/SettingsSheet';
 import { ProductImage, QtyStepper, useToast } from '../components/ui';
 import type { ListItem, Product } from '../types';
@@ -45,6 +46,7 @@ export function ListScreen() {
   );
 
   const finish = () => {
+    markShoppingFinished();
     dispatch({ type: 'finishShopping' });
     toast(`${done.length} ${pluralPl(done.length, 'produkt trafił', 'produkty trafiły', 'produktów trafiło')} do siatek`);
   };

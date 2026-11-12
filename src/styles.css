@@ -1941,8 +1941,17 @@ button:disabled {
   font-weight: 600;
   line-height: 1.25;
   text-align: center;
+  /* dwie linie, reszta ucięta: wszystkie kafelki mają tę samą wysokość i ten sam układ */
+  width: 100%;
+  height: calc(2 * 1.25em);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 .freq-every {
+  white-space: nowrap;
   font-size: var(--fs-micro);
   color: var(--muted);
 }
@@ -2031,4 +2040,16 @@ button:disabled {
 .photo-actions {
   display: flex;
   gap: var(--s2);
+}
+
+/* przytrzymanie nie zaznacza tekstu (uchwyty zaznaczania psuły wygląd); pola do pisania zostają zaznaczalne */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }

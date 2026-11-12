@@ -6,6 +6,9 @@ const config: CapacitorConfig = {
   appName: 'Shelfie',
   webDir: 'dist',
   backgroundColor: '#F6EDE3',
+  plugins: {
+    LocalNotifications: { smallIcon: 'ic_stat_shelfie', iconColor: '#B65A3C' },
+  },
   server: {
     androidScheme: 'https',
   },

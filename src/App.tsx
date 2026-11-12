@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { buildSuggestions } from './insights';
 import { StoreProvider, useStore } from './store';
 import { SyncProvider } from './sync/SyncProvider';
@@ -6,11 +6,28 @@ import { CatalogProvider } from './catalog';
 import { BottomNav, ToastProvider, type Tab } from './components/ui';
 import { StockScreen } from './screens/StockScreen';
 import { ListScreen } from './screens/ListScreen';
+import { onNoticeTap, syncShoppingNotice } from './shoppingNotice';
 
 function Shell() {
   const [tab, setTab] = useState<Tab>('fridge');
   const { state } = useStore();
   const hasSuggestions = useMemo(() => buildSuggestions(state).length > 0, [state]);
+  const total = state.list.length;
+  const done = state.list.filter((l) => l.done).length;
+
+  // Powiadomienie na pasku telefonu na czas zakupów; co minutę sprawdzamy też godzinę (15:30).
+  useEffect(() => {
+    void syncShoppingNotice({ total, done });
+    const timer = window.setInterval(() => void syncShoppingNotice({ total, done }), 60_000);
+    return () => window.clearInterval(timer);
+  }, [total, done]);
+  useEffect(() => {
+    let remove: () => void = () => undefined;
+    void onNoticeTap(() => setTab('list')).then((r) => {
+      remove = r;
+    });
+    return () => remove();
+  }, []);
 
   return (
     <div className="app">
@@ -22,7 +39,7 @@ function Shell() {
       <BottomNav
         tab={tab}
         onChange={setTab}
-        list={{ total: state.list.length, done: state.list.filter((l) => l.done).length, suggestions: hasSuggestions }}
+        list={{ total, done, suggestions: hasSuggestions }}
       />
     </div>
   );

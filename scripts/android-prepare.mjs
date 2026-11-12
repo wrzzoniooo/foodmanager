@@ -25,6 +25,7 @@ if (!manifest.includes('android.permission.CAMERA')) {
     `<uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />`,
   );
   await writeFile(manifestPath, manifest);
@@ -70,6 +71,15 @@ for (const [name, scale] of Object.entries(DENSITIES)) {
   const round = await sharp(full).composite([{ input: roundMask(legacy), blend: 'dest-in' }]).png().toBuffer();
   await writeFile(`${dir}/ic_launcher_round.png`, round);
   await sharp(Buffer.from(plate(false, FOREGROUND_SCALE)), { density: 300 }).resize(adaptive, adaptive).png().toFile(`${dir}/ic_launcher_foreground.png`);
+}
+
+// 3b) Mała ikona powiadomienia: biały obrys lodówki na przezroczystym tle (Android koloruje ją sam).
+const statIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><rect x="12" y="5" width="24" height="38" rx="5"/><path d="M12 19h24"/><path d="M31 11v4M31 25v8"/></g></svg>`;
+for (const [name, scale] of Object.entries(DENSITIES)) {
+  const dir = `${RES}/drawable-${name}`;
+  await mkdir(dir, { recursive: true });
+  const px = Math.round(24 * scale);
+  await sharp(Buffer.from(statIcon), { density: 300 }).resize(px, px).png().toFile(`${dir}/ic_stat_shelfie.png`);
 }
 
 // 4) Numer wersji.
