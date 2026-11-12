@@ -8,7 +8,8 @@ import { AddProductSheet } from '../components/AddProductSheet';
 import { CatalogSearch } from '../components/CatalogSearch';
 import { Collapsible } from '../components/Collapsible';
 import { ReceiptSheet } from '../components/ReceiptSheet';
-import { matchLines } from '../receipt/match';
+import { matchLines, suggestProducts } from '../receipt/match';
+import { guessCategory } from '../categorize';
 import { markShoppingFinished } from '../shoppingNotice';
 import { SettingsSheet } from '../components/SettingsSheet';
 import { ProductImage, QtyStepper, useToast } from '../components/ui';
@@ -58,15 +59,18 @@ export function ListScreen() {
       setSheet('menu');
       return;
     }
-    // Najpierw ta sama nazwa, potem pewne dopasowanie z katalogu (np. "mleko pilos" daje produkt ze zdjęciem).
+    // Najpierw ta sama nazwa, potem podpowiedź ze słownika ("pomidor" -> Pomidory), potem pewne dopasowanie po podobieństwie.
     const exact = state.products.find((p) => p.name.toLocaleLowerCase('pl') === name.toLocaleLowerCase('pl'));
-    const guess = exact ? undefined : matchLines([{ raw: name, qty: 1 }], state.products, state.receiptMap)[0];
-    const existing = exact ?? (guess?.status === 'ok' && guess.productId ? productById(guess.productId) : undefined);
+    const hint = exact ? undefined : suggestProducts(name, state.products, 1)[0]?.product;
+    const guess = exact || hint ? undefined : matchLines([{ raw: name, qty: 1 }], state.products, state.receiptMap)[0];
+    const existing = exact ?? hint ?? (guess?.status === 'ok' && guess.productId ? productById(guess.productId) : undefined);
+    // Nowy produkt dostaje kategorię ze słownika albo po słowach w nazwie (inaczej trafiłby do "Inne").
+    const kind = existing ? null : guessCategory(name, state.products.filter((p) => p.catalog));
     const product: Product = existing ?? {
       id: `own-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
       name: capitalize(name),
-      category: 'inne',
-      defaultPlace: 'pantry',
+      category: kind?.category ?? 'inne',
+      defaultPlace: kind?.place ?? 'pantry',
     };
     if (!existing) dispatch({ type: 'productAdd', product });
     dispatch({ type: 'listAdd', productId: product.id });

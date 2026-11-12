@@ -3,17 +3,17 @@ import { useStore } from './store';
 import type { Product } from './types';
 
 /**
- * Katalog produktów Lidla wczytywany z pliku w aplikacji (public/data/lidl.json, z importera scripts/import-lidl.mjs).
+ * Słownik prostych nazw produktów (bez producenta i gramatury) wczytywany z pliku w aplikacji (public/data/produkty.json, budowany ze scripts/dictionary.txt).
  * Wczytujemy go raz; braki dodajecie sami skanerem kodu albo jako własny produkt.
  */
-interface LidlFile {
+interface DictFile {
   products: Product[];
 }
 
-const CACHE_KEY = 'spizarnia.lidl.v1';
+const CACHE_KEY = 'spizarnia.dict.v1';
 
-function isLidlFile(x: unknown): x is LidlFile {
-  const f = x as LidlFile;
+function isDictFile(x: unknown): x is DictFile {
+  const f = x as DictFile;
   return !!f && Array.isArray(f.products);
 }
 
@@ -21,7 +21,7 @@ function readCache(): Product[] {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     const parsed: unknown = raw ? JSON.parse(raw) : null;
-    return isLidlFile(parsed) ? parsed.products : [];
+    return isDictFile(parsed) ? parsed.products : [];
   } catch {
     return [];
   }
@@ -36,10 +36,10 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     if (cached.length > 0) dispatch({ type: 'catalogMerge', products: cached });
 
     let cancelled = false;
-    fetch(`${import.meta.env.BASE_URL}data/lidl.json`, { cache: 'no-cache' })
+    fetch(`${import.meta.env.BASE_URL}data/produkty.json`, { cache: 'no-cache' })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((json: unknown) => {
-        if (cancelled || !isLidlFile(json) || json.products.length === 0) return;
+        if (cancelled || !isDictFile(json) || json.products.length === 0) return;
         dispatch({ type: 'catalogMerge', products: json.products });
         try {
           localStorage.setItem(CACHE_KEY, JSON.stringify({ products: json.products }));

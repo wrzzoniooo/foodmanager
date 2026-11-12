@@ -31,6 +31,8 @@ export interface Product {
   barcode?: string;
   /** Produkt z katalogu wczytanego razem z aplikacją: każdy telefon go ma, więc nie synchronizujemy go. */
   catalog?: boolean;
+  /** Inne nazwy tego samego produktu: synonimy, marki i skróty z paragonów (małe litery). */
+  aliases?: string[];
 }
 
 export interface StockItem {

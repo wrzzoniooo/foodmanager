@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import type { AppState, Place, Product, StockItem } from './types';
 import { createSeed } from './data/seed';
+import { guessCategory } from './categorize';
 import { preferredPlace, recordPlace } from './habits';
 import { applyRows, type Row } from './sync/rows';
 import { applyReceipt, type ReceiptItem } from './receipt/reconcile';
@@ -39,8 +40,14 @@ type Action =
   | { type: 'reset' };
 
 /** Produkty prawdziwe (nie z danych demo): z katalogu Lidla, Open Food Facts i własne. */
+/** Własny produkt bez kategorii dostaje ją ze słownika albo po nazwie. */
+function reclassify(p: Product, dictionary: Product[]): Product {
+  const g = guessCategory(p.name, dictionary);
+  return g ? { ...p, category: g.category, defaultPlace: g.place } : p;
+}
+
 function isRealProduct(p: Product): boolean {
-  return /^(lidl|off|own)-/.test(p.id);
+  return /^(lidl|off|own|sl)-/.test(p.id);
 }
 
 let counter = 0;
@@ -177,12 +184,24 @@ function reducer(state: AppState, action: Action): AppState {
     case 'dismissSuggestion':
       return { ...state, dismissed: { ...state.dismissed, [action.productId]: Date.now() } };
     case 'catalogMerge': {
+      // Słownik zastępuje stary katalog: stare pozycje katalogu zostają tylko, gdy coś na nich oparte (zapas, lista, historia).
+      const used = new Set<string>([
+        ...state.stock.map((s) => s.productId),
+        ...state.list.map((l) => l.productId),
+        ...state.events.map((e) => e.productId),
+        ...state.purchases.map((p) => p.productId),
+        ...Object.values(state.receiptMap),
+      ]);
       const incoming = new Map(action.products.map((p) => [p.id, p]));
-      const kept = state.products.map((p) => incoming.get(p.id) ?? p);
-      const known = new Set(state.products.map((p) => p.id));
+      const isOldCatalog = (p: Product) => (p.catalog || p.id.startsWith('lidl-')) && !incoming.has(p.id);
+      const kept = state.products
+        .filter((p) => !isOldCatalog(p) || used.has(p.id))
+        .map((p) => incoming.get(p.id) ?? p)
+        .map((p) => (p.catalog || p.category !== 'inne' ? p : reclassify(p, action.products)));
+      const known = new Set(kept.map((p) => p.id));
       const added = action.products.filter((p) => !known.has(p.id));
-      if (added.length === 0 && kept.every((p, i) => p === state.products[i])) return state;
-      return { ...state, products: [...kept, ...added] };
+      const same = added.length === 0 && kept.length === state.products.length && kept.every((p, i) => p === state.products[i]);
+      return same ? state : { ...state, products: [...kept, ...added] };
     }
     case 'productPhoto':
       // Własne zdjęcie: produkt z katalogu przestaje być "tylko lokalny", żeby zdjęcie trafiło też na drugi telefon.
