@@ -1,8 +1,8 @@
-// Buduje public/data/produkty.json ze źródła scripts/dictionary.txt (proste nazwy produktów z kategoriami i aliasami).
+// Buduje public/data/produkty.json ze źródeł scripts/dictionary.txt i dictionary-2.txt (proste nazwy produktów z kategoriami i aliasami).
 // Uruchom: node scripts/build-dictionary.mjs
 import { readFile, writeFile } from 'node:fs/promises';
 
-const SRC = new URL('./dictionary.txt', import.meta.url);
+const SRC_FILES = ['dictionary.txt', 'dictionary-2.txt'].map((f) => new URL('./' + f, import.meta.url));
 const OUT = new URL('../public/data/produkty.json', import.meta.url);
 const FRIDGE = new Set(['nabial', 'sery', 'mieso', 'warzywa', 'mrozonki']);
 const MAX_ALIASES = 14;
@@ -18,7 +18,8 @@ const slug = (s) =>
 
 const byName = new Map();
 let category = null;
-for (const raw of (await readFile(SRC, 'utf8')).split(/\r?\n/)) {
+const text = (await Promise.all(SRC_FILES.map((f) => readFile(f, 'utf8')))).join('\n');
+for (const raw of text.split(/\r?\n/)) {
   const line = raw.trim();
   if (!line || line.startsWith('#')) continue;
   const head = line.match(/^\[(\w+)\]$/);
@@ -45,9 +46,13 @@ for (const raw of (await readFile(SRC, 'utf8')).split(/\r?\n/)) {
   byName.set(key, { id: `sl-${key}`, name, category, defaultPlace, aliases, catalog: true });
 }
 
+// Ten sam alias w dwóch produktach: zostaje przy pierwszym (część pierwsza słownika jest staranniej dobrana).
+const takenAlias = new Set();
 const products = [...byName.values()].map((p) => ({
   ...p,
-  aliases: [...new Set(p.aliases.map((a) => a.toLowerCase()).filter((a) => a !== p.name.toLowerCase()))].slice(0, MAX_ALIASES),
+  aliases: [...new Set(p.aliases.map((a) => a.toLowerCase()).filter((a) => a !== p.name.toLowerCase()))]
+    .filter((a) => (takenAlias.has(a) ? false : (takenAlias.add(a), true)))
+    .slice(0, MAX_ALIASES),
 }));
 await writeFile(OUT, JSON.stringify({ generatedAt: new Date().toISOString(), source: 'scripts/dictionary.txt', products }));
 const per = {};

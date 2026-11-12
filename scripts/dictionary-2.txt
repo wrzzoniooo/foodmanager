@@ -1,0 +1,248 @@
+# Słownik, część druga (ta sama składnia co dictionary.txt). Nazwy powtórzone z części pierwszej łączą aliasy.
+
+[nabial]
+Jogurt grecki = grecki, jogurt typu greckiego
+Mleko w proszku @pantry = mleko sproszkowane
+Mleko skondensowane @pantry = mleko zagęszczone, mleko słodzone, kajmak
+Bita śmietana = śmietana do ubijania, śmietana kremówka, kremówka, śmietanka 30
+Tofu = tofu naturalne, tofu wędzone, tempeh
+Masło klarowane = ghee, masło smażone
+Serek twarogowy = twarożek, serek do kanapek
+Deser jogurtowy = jogurt deserowy, jogurt z musli, jogurt z owocami
+Jajka przepiórcze = jaja przepiórcze
+
+[sery]
+Ser topiony w plasterkach = ser topiony plastry, hochland
+Ser do tarcia = ser starty, ser do zapiekanek
+Ser sałatkowy = feta w kostce, ser grecki
+Oscypek = ser góralski, bundz, bryndza
+Ser lazur = ser niebieski, lazur
+Ser kremowy = ser śmietankowy, ser smarowny
+Brie = ser brie
+
+[mieso]
+Polędwiczka = polędwiczka wieprzowa, polędwiczka wołowa
+Mięso na gulasz = gulasz wieprzowy, gulasz wołowy, mięso gulaszowe
+Kiełbasa biała = biała kiełbasa, kiełbasa surowa
+Kiełbasa krakowska = krakowska, kiełbasa wędzona
+Szynka konserwowa = szynka puszka, szynka w puszce
+Pierś z kaczki = kaczka, kaczka cała, udko z kaczki
+Indyk mielony = mięso mielone z indyka, mielone z indyka
+Skrzydełka = skrzydełka z kurczaka, skrzydełka kurczaka
+Ryba wędzona = makrela wędzona, pstrąg wędzony, łosoś wędzony
+Pstrąg = pstrąg świeży, pstrąg tęczowy
+Sandacz = filet z sandacza, karp, ryba słodkowodna
+Surimi = paluszki krabowe, paluszki surimi
+Mięso mielone drobiowe = mielone z kurczaka, mielone drobiowe
+Kotlet schabowy = kotlety schabowe, kotlet z piersi, panierowany kotlet
+Flaczki = flaki, flaki wołowe
+Szynka w plastrach = szynka krojona, szynka plastry
+
+[warzywa]
+Cebula czerwona = czerwona cebula
+Szalotka = szalotki, cebula perłowa
+Kalarepa = kalarepka
+Pasternak = pasternak korzeń
+Batat = bataty, słodki ziemniak, słodkie ziemniaki
+Papryka chili = chili, chilli, papryczka chili, papryczki chili
+Rukola = rukola paczka, rukola świeża
+Jarmuż = jarmuż świeży, kale
+Brukselka = brukselki, kapusta brukselska
+Szparagi = szparagi zielone, szparagi białe
+Boczniaki = boczniak, shiitake, grzyby leśne
+Mięta = mięta świeża, melisa świeża
+Natka pietruszki = natka, pietruszka natka, pietruszka pęczek
+Rozmaryn świeży = tymianek świeży, zioła świeże, szałwia świeża
+Sałata lodowa = lodowa, sałata masłowa, sałata rzymska
+Rzepa = rzepa biała
+Ogórek zielony = ogórek gruntowy, ogórek długi, ogórek szklarniowy
+Pomidory koktajlowe = cherry, pomidorki koktajlowe, pomidorki cherry
+Pomidory malinowe = malinowe pomidory, pomidory gałązkowe
+
+[owoce]
+Grejpfrut = grejpfruty, pomelo
+Mandarynki = mandarynka, klementynki, klementynka
+Limonki = limonka
+Nektarynki = nektarynka, brzoskwinia płaska
+Wiśnie = wiśnia, wiśnie świeże
+Porzeczki = porzeczka, porzeczka czerwona, porzeczka czarna, agrest
+Jeżyny = jeżyna, jagody leśne
+Figi = figa, figi świeże
+Papaja = owoc smoka, liczi, marakuja, owoce egzotyczne
+Kokos = orzech kokosowy, wiórki kokosowe, wiórki
+Rabarbar = rabarbar świeży
+Owoce = owoce sezonowe, koszyk owoców, mieszanka owoców
+Jabłka czerwone = jabłka polskie, polskie jabłka, jabłka ryneczek
+Gruszki konferencja = gruszki polskie, polskie gruszki
+
+[pieczywo]
+Chleb żytni = żytni, chleb na zakwasie, chleb zakwas, chleb orkiszowy
+Chleb tostowy = chleb do tostów, chleb krojony, tostowy
+Bułki grahamki = grahamki, graham, bułki kajzerki, kajzerki
+Chałka = chałka maślana, chałka z rodzynkami, strucla
+Chleb bezglutenowy = pieczywo bezglutenowe, bezglutenowy
+Grzanki = grzanki czosnkowe, grzanki do zup, krutony
+Placki tortilla = tortilla pszenna, wraps, wrapy
+Bułki do kebaba = bułka kebab, chlebek pita
+Bułki hot dog = bułki do hot dogów, hot dog bułka
+Pieczywo tostowe = tost pełnoziarnisty, tosty pełnoziarniste
+
+[sypkie]
+Kasza gryczana = gryczana, kasza gryczana biała, kasza gryczana prażona
+Kasza jaglana = jaglana, jagły, proso
+Kasza manna = manna, kaszka manna
+Kasza pęczak = pęczak, kasza jęczmienna, jęczmienna
+Kuskus = kasza kuskus, kus kus
+Ryż basmati = basmati, ryż jaśminowy, jaśminowy
+Ryż do risotto = arborio, ryż arborio, risotto
+Makaron spaghetti = spaghetti, spagetti
+Makaron penne = penne, rurki
+Makaron świderki = fusilli, świderki
+Makaron nitki = nitki, makaron do rosołu, drobny makaron
+Makaron lasagne = lasagne, lazania, płaty lasagne
+Płatki kukurydziane = corn flakes, cornflakes
+Mąka ziemniaczana = skrobia ziemniaczana, skrobia kukurydziana
+Mąka tortowa = mąka pszenna, mąka typ 450
+Cukier puder = puder, cukier w proszku
+Cukier trzcinowy = brązowy cukier, cukier brązowy
+Cukier waniliowy = cukier wanilinowy, wanilia, wanilin
+Proszek do pieczenia = soda, soda oczyszczona, proszek
+Żelatyna = agar, żelatyna w proszku
+Siemię lniane = siemię, len, nasiona lnu
+Sezam = nasiona sezamu, mak, mak niebieski
+Chia = nasiona chia, nasiona
+Słonecznik = pestki słonecznika, słonecznik łuskany
+Orzechy włoskie = włoskie, orzechy laskowe, laskowe
+Migdały = migdały łuskane, płatki migdałowe
+Ciecierzyca = cieciorka, ciecierzyca sucha
+Soczewica = soczewica czerwona, soczewica zielona
+Groch = groch łuskany, groch połówki
+Fasola biała = fasola jaś, jaś, fasola czerwona
+Galaretka = galaretka owocowa, żelatyna
+
+[konserwy]
+Ananas w puszce = ananas puszka, ananas plastry, ananas kawałki
+Brzoskwinie w puszce = brzoskwinie puszka, mandarynki w puszce, owoce w puszce, koktajl owocowy
+Ogórki konserwowe = ogórki w słoiku, korniszony, ogórki w zalewie
+Śledzie w oleju = śledź w oleju, filety śledziowe, śledź w śmietanie, śledź w occie
+Szprotki = szprotki w oleju, szprotki w sosie
+Pasztet w puszce = pasztet konserwowy, pasztet puszka
+Mielonka = mielonka tyrolska, tyrolska, mielonka wieprzowa
+Masło orzechowe = masło orzechowe chrupiące, masło z orzeszków, krem orzechowy
+Powidła = powidła śliwkowe, powidło, konfitura
+Marmolada = marmolada wieloowocowa, dżem
+Przecier pomidorowy = przecier, sos pomidorowy, pomidorowy przecier
+Zupa w słoiku = zupa pomidorowa, krem warzywny, zupa gotowa
+Ćwikła = ćwikła z chrzanem, buraczki z chrzanem
+Mizeria = ogórki w śmietanie
+Kapary = kapary w zalewie
+Tuńczyk sałatkowy = sałatka z tuńczykiem, tuńczyk z warzywami, sałatka rybna
+
+[sosy]
+Sos worcester = worcestershire, sos worcestershire
+Tabasco = sos tabasco, sos chili ostry
+Olej rzepakowy = rzepakowy, olej kujawski, olej do smażenia
+Olej słonecznikowy = słonecznikowy, olej do sałatek
+Olej kokosowy = kokosowy, olej do pieczenia
+Ocet jabłkowy = jabłkowy, ocet winny
+Ocet balsamiczny = balsamico, ocet balsamiczny modena
+Papryka słodka = papryka w proszku, papryka mielona słodka
+Papryka ostra = chili mielone, papryka mielona ostra, płatki chili
+Cynamon = cynamon mielony, laska cynamonu
+Kurkuma = kurkuma mielona
+Oregano = oregano suszone
+Bazylia suszona = bazylia sucha, zioła suszone
+Tymianek suszony = tymianek, tymianek sucha
+Majeranek = majeranek suszony
+Liść laurowy = laur, ziele angielskie, ziele
+Gałka muszkatołowa = gałka, muszkatołowa
+Curry = przyprawa curry, curry w proszku
+Kminek = kmin, kmin rzymski, kumin
+Czosnek granulowany = czosnek suszony, czosnek w proszku, cebula granulowana
+Przyprawa do kurczaka = przyprawa do mięsa, przyprawa do grilla, przyprawa do ryb
+Zioła prowansalskie = zioła włoskie, przyprawa włoska, przyprawa do pizzy
+Sos do sałatek = sos winegret, sos cezar, sos vinaigrette
+
+[napoje]
+Woda gazowana = woda z gazem, woda mineralna gazowana
+Woda niegazowana = woda bez gazu, woda źródlana, woda mineralna
+Sok pomarańczowy = sok z pomarańczy, sok pomarańcza
+Sok jabłkowy = sok z jabłek, sok jabłko
+Sok multiwitamina = multiwitamina, sok wieloowocowy
+Cola = coca cola, pepsi, napój cola
+Lemoniada = lemoniada cytrynowa, napój cytrynowy
+Kawa ziarnista = kawa w ziarnach, ziarna kawy
+Kawa rozpuszczalna = kawa instant, nescafe
+Herbata zielona = zielona herbata, sencha, matcha
+Herbata owocowa = owocowa herbata, herbata malinowa
+Herbata ziołowa = melisa, rumianek, herbata miętowa
+Herbata czarna = czarna herbata, earl grey, herbata earl grey
+Piwo bezalkoholowe = piwo 0, piwo 0%, bezalkoholowe
+Wino czerwone = czerwone wino, wino wytrawne
+Wino białe = białe wino, wino półwytrawne
+Prosecco = szampan, wino musujące, cava
+Whisky = whiskey, bourbon, burbon
+Gin = gin tonic, ginger beer
+Rum = rum ciemny, rum biały
+Likier = nalewka, likier kawowy, baileys
+Napój owocowy = napój jabłkowy, napój pomarańczowy
+Kompot = kompot owocowy, kompot wiśniowy
+Smoothie = smoothie owocowe, koktajl owocowy, koktajl
+Sok warzywny = sok pomidorowy, sok marchwiowy, sok z buraka
+
+[mrozonki]
+Mieszanka warzyw = warzywa mrożone, jarzyny mrożone, mieszanka chińska
+Krokiety = krokiety mrożone, krokiet z mięsem, krokiet z kapustą
+Naleśniki mrożone = naleśniki z serem mrożone, naleśniki gotowe
+Gołąbki = gołąbki mrożone, gołąbek
+Placki ziemniaczane = placki mrożone, placki
+Ryba w panierce = ryba panierowana, paluszki rybne, filet w panierce
+Hamburgery = burger, burgery wołowe, kotlety do burgerów
+Falafel = falafel mrożony, kulki warzywne
+Warzywa do zupy = włoszczyzna mrożona, jarzyny do zupy
+Maliny mrożone = maliny, owoce leśne mrożone, mrożone owoce
+Frytki batatowe = frytki ze słodkich ziemniaków, bataty mrożone
+Kebab = kebab mrożony, gyros, kebab drobiowy
+
+[slodycze]
+Czekolada mleczna = czekolada, mleczna czekolada, milka
+Czekolada gorzka = gorzka czekolada, czekolada deserowa
+Baton proteinowy = protein bar, baton białkowy, baton high protein
+Herbatniki = ciastka maślane, ciasteczka maślane
+Marshmallow = pianki, pianki marshmallow
+Lizaki = lizak, lizaki owocowe, chupa chups
+Dropsy = dropsy owocowe, landrynki, cukierki twarde
+Ciasteczka owsiane = ciastka owsiane, owsiane ciastka
+Wafle ryżowe = wafle kukurydziane, chrupki ryżowe
+
+[slone]
+Orzechy solone = orzeszki solone, orzeszki ziemne solone
+Pistacje = pistacje solone, pistacje prażone
+Migdały solone = migdały prażone, nerkowce, orzechy nerkowca
+Słonecznik prażony = pestki słonecznika prażone, pestki dyni
+Chipsy paprykowe = lays paprykowe, chipsy z papryką
+Chipsy solone = chipsy naturalne, lays solone
+Chrupki kukurydziane = chrupki, flipsy, chrupki serowe
+
+[inne]
+Płyn do podłóg = płyn do mycia podłóg, płyn do czyszczenia
+Płyn do WC = żel do wc, kostka do wc, kulki do wc
+Odświeżacz powietrza = odświeżacz, zapach do domu
+Wybielacz = domestos, wybielacz do wc, środek czyszczący
+Ściereczki = ściereczka, ścierki, mikrofibra, rękawiczki
+Zapałki = zapalniczka, zapałki kuchenne
+Żarówka = żarówki, żarówka led, led
+Papier do pieczenia = papier śniadaniowy, folia spożywcza
+Patyczki higieniczne = patyczki do uszu, waciki, waciki kosmetyczne
+Podpaski = tampony, wkładki higieniczne, wkładki
+Pieluchy = pieluszki, pampers, chusteczki dla dzieci
+Krem do rąk = krem, krem do twarzy, balsam do ciała
+Żel pod prysznic = żel do mycia ciała, płyn do kąpieli
+Dezodorant = antyperspirant, dezodorant w sztyfcie
+Maszynki do golenia = maszynka, żyletki, pianka do golenia
+Karma dla psa = karma psa, jedzenie dla psa, smakołyki dla psa
+Karma dla kota = karma kota, jedzenie dla kota, saszetki dla kota
+Żwirek = żwirek dla kota, żwirek do kuwety
+Karma dla ryb = pokarm dla ryb, karma dla ptaków
+Leki = lek, tabletki, apteka, plastry
+Witaminy = witamina c, witamina d, magnez
